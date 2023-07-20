@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published, prereleased ]
+    
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: GitHub Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v2.2.4
+      with:
+        version: 7.25.1
+        run_install: true
+    
+    - name: Setup Aftman
+      uses: ok-nick/setup-aftman@v0.3.0
+    
+    - name: Install Rojo & Remodel
+      run: aftman install
+        
+    - name: Build & Compile
+      run: |
+        pnpm run rojo --verbose
+      
+    - name: Bundle Luau
+      run: pnpm run bundle
+      
+    - name: Upload Release Assets
+      uses: alexellis/upload-assets@0.4.0
+      env:
+        ACTIONS_STEP_DEBUG: true
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        asset_paths: '["dist/main.rbxm", "dist/main.lua"]'
