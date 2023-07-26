@@ -18,7 +18,7 @@ function Element:New(Config)
     local Library = self.Library
 
     local Dropdown = {
-        Options = Config.Options,
+        Values = Config.Values,
         Value = Config.Default,
         Multi = Config.Multi,
         Buttons = {},
@@ -151,7 +151,7 @@ function Element:New(Config)
     end
     
     local function RecalculateListSize()
-        if #Dropdown.Options > 10 then
+        if #Dropdown.Values > 10 then
             DropdownHolderCanvas.Size = UDim2.fromOffset(170, 392)
         else
             DropdownHolderCanvas.Size = UDim2.fromOffset(170, DropdownListLayout.AbsoluteContentSize.Y + 10)
@@ -198,7 +198,7 @@ function Element:New(Config)
     end
 
     function Dropdown:Display()
-        local Values = Dropdown.Options
+        local Values = Dropdown.Values
         local Str = ''
 
         if Config.Multi then
@@ -231,7 +231,7 @@ function Element:New(Config)
     end
 
     function Dropdown:BuildDropdownList()
-        local Values = Dropdown.Options
+        local Values = Dropdown.Values
         local Buttons = {}
 
         for _, Element in next, DropdownScrollFrame:GetChildren() do
@@ -370,7 +370,7 @@ function Element:New(Config)
 
     function Dropdown:SetValues(NewValues)
         if NewValues then
-            Dropdown.Options = NewValues
+            Dropdown.Values = NewValues
         end
 
         Dropdown:BuildDropdownList()
@@ -386,7 +386,7 @@ function Element:New(Config)
             local nTable = {}
 
             for Value, Bool in next, Val do
-                if table.find(Dropdown.Options, Value) then
+                if table.find(Dropdown.Values, Value) then
                     nTable[Value] = true
                 end
             end
@@ -395,7 +395,7 @@ function Element:New(Config)
         else
             if (not Val) then
                 Dropdown.Value = nil
-            elseif table.find(Dropdown.Options, Val) then
+            elseif table.find(Dropdown.Values, Val) then
                 Dropdown.Value = Val
             end
         end
@@ -412,18 +412,18 @@ function Element:New(Config)
     local Defaults = {}
 
     if type(Config.Default) == 'string' then
-        local Idx = table.find(Dropdown.Options, Config.Default)
+        local Idx = table.find(Dropdown.Values, Config.Default)
         if Idx then
             table.insert(Defaults, Idx)
         end
     elseif type(Config.Default) == 'table' then
         for _, Value in next, Config.Default do
-            local Idx = table.find(Dropdown.Options, Value)
+            local Idx = table.find(Dropdown.Values, Value)
             if Idx then
                 table.insert(Defaults, Idx)
             end
         end
-    elseif type(Config.Default) == 'number' and Dropdown.Options[Config.Default] ~= nil then
+    elseif type(Config.Default) == 'number' and Dropdown.Values[Config.Default] ~= nil then
         table.insert(Defaults, Config.Default)
     end
 
@@ -431,9 +431,9 @@ function Element:New(Config)
         for i = 1, #Defaults do
             local Index = Defaults[i]
             if Config.Multi then
-                Dropdown.Value[Dropdown.Options[Index]] = true
+                Dropdown.Value[Dropdown.Values[Index]] = true
             else
-                Dropdown.Value = Dropdown.Options[Index]
+                Dropdown.Value = Dropdown.Values[Index]
             end
 
             if (not Config.Multi) then break end
