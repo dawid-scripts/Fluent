@@ -108,7 +108,7 @@ return function(Title, Desc, Parent, Hover)
     if Hover then
         Creator.AddSignal(Element.Frame.MouseEnter, function() SetTransparency(0.83) end)
         Creator.AddSignal(Element.Frame.MouseLeave, function() SetTransparency(0.87) end)
-        Creator.AddSignal(Element.Frame.MouseButton1Down, function() SetTransparency(0.88) end)
+        Creator.AddSignal(Element.Frame.MouseButton1Down, function() SetTransparency(0.90) end)
         Creator.AddSignal(Element.Frame.MouseButton1Up, function()  SetTransparency(0.83) end)
     end
 
