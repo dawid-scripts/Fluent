@@ -115,7 +115,7 @@ function Element:New(Config)
     Creator.AddSignal(UserInputService.InputChanged, function(Input)
         if Dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then 
             local SizeScale = math.clamp((Input.Position.X - SliderRail.AbsolutePosition.X) / SliderRail.AbsoluteSize.X, 0, 1)
-            Slider:Set(Slider.Min + ((Slider.Max - Slider.Min) * SizeScale)) 
+            Slider:SetValue(Slider.Min + ((Slider.Max - Slider.Min) * SizeScale)) 
         end
     end)
 
@@ -124,7 +124,7 @@ function Element:New(Config)
         Func(Slider.Value)
     end
 
-    function Slider:Set(Value)
+    function Slider:SetValue(Value)
         self.Value = Library:Round(math.clamp(Value, Slider.Min, Slider.Max), Slider.Rounding)
         SliderDot.Position = UDim2.new((self.Value - Slider.Min) / (Slider.Max - Slider.Min), -7, 0.5, 0)
         SliderFill.Size = UDim2.fromScale((self.Value - Slider.Min) / (Slider.Max - Slider.Min), 1)
@@ -134,7 +134,7 @@ function Element:New(Config)
         Library:SafeCallback(Slider.Changed, self.Value)
     end
 
-    Slider:Set(Config.Default)
+    Slider:SetValue(Config.Default)
     return Slider
 end
 
