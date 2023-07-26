@@ -12,7 +12,9 @@ function Paragraph:New(Config)
     Config.Content = Config.Content or ""
     
     local Paragrah = require(Components.Element)(Config.Title, Config.Content, Paragraph.Container, false)
-    Paragrah.Frame.BackgroundTransparency = 0.94
+    Paragrah.Frame.BackgroundTransparency = 0.92
+
+    return Paragraph
 end
 
 return Paragraph
