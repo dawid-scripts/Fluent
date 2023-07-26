@@ -5,12 +5,15 @@
   "main": "init.lua",
   "scripts": {
     "rojo": "mkdirp dist && rojo build -o dist/main.rbxm",
-    "bundle": "pnpm run rojo && remodel run ci/bundle.lua"
+    "bundle:dev": "pnpm run rojo && cross-env ENV=development remodel run ci/bundle.lua",
+    "bundle:prod": "pnpm run rojo && cross-env ENV=production remodel run ci/bundle.lua",
+    "bundle": "pnpm run bundle:dev && pnpm run bundle:prod"
   },
   "keywords": [],
   "author": "dawid",
   "license": "MIT",
   "devDependencies": {
-    "mkdirp": "^3.0.1"
+    "mkdirp": "^3.0.1",
+    "cross-env": "^7.0.3"
   }
 }
