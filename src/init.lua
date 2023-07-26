@@ -7,7 +7,6 @@ local Camera = workspace.CurrentCamera
 local Mouse = LocalPlayer:GetMouse()
 
 local Root = script
-
 local Creator = require(Root.Creator)
 local Elements = require(Root.Elements)
 local Acrylic = require(Root.Acrylic)
@@ -28,27 +27,22 @@ local Library = {
     GUI = GUI
 }
 
-function Library:SafeCallback(f, ...)
-    if (not f) then
+function Library:SafeCallback(Function, ...)
+    if (not Function) then
         return;
     end;
 
-    if not Library.NotifyOnError then
-        return f(...);
-    end;
-
-    local success, event = pcall(f, ...);
-
-    if not success then
-        local _, i = event:find(":%d+: ");
+    local Success, Event = pcall(Function, ...);
+    if not Success then
+        local _, i = Event:find(":%d+: ");
 
         if not i then
-            return print(event);
-        end;
+            return print(Event)
+        end
 
-        return print(event:sub(i + 1));
-    end;
-end;
+        return print(Event:sub(i + 1))
+    end
+end
 
 function Library:Round(Number, Factor)
     if Factor == 0 then
@@ -94,6 +88,10 @@ function Library:CreateWindow(Config)
 
     local TabModule = require(Components.Tab)
     TabModule.Window = Window
+    Window.SelectTab = TabModule.SelectTab
+
+    local DialogModule = require(Components.Dialog)
+    DialogModule.Window = Window.Frame
 
     function Window:Tab(TabConfig)
         local Tab = {Type = "Tab"}
@@ -101,8 +99,48 @@ function Library:CreateWindow(Config)
         local TabFrame = TabModule:New(TabConfig.Title, TabConfig.Icon, Window.Frame.TabHolder)
         Tab.Container = TabFrame.Container
 
-        setmetatable(Tab, Addons);
+        setmetatable(Tab, Addons)
         return Tab
+    end
+
+    function Window:Dialog(Config)
+        local Dialog = require(Components.Dialog):Create()
+        Dialog.Title.Text = Config.Title
+
+        local Content = New("TextLabel", {
+            FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+            Text = Config.Content,
+            TextColor3 = Color3.fromRGB(240, 240, 240),
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextYAlignment = Enum.TextYAlignment.Top,
+            Size = UDim2.new(1, -40, 1, 0),
+            Position = UDim2.fromOffset(20, 60),
+            BackgroundTransparency = 1,
+            Parent = Dialog.Root,
+            ClipsDescendants = false,
+            ThemeTag = {
+                TextColor3 = "ElementTitle"
+            }
+        })
+
+        New("UISizeConstraint", {
+            MinSize = Vector2.new(300, 165),
+            Parent = Dialog.Root
+        })
+
+        Dialog.Root.Size = UDim2.fromOffset(Content.TextBounds.X + 40, 165)
+        if Content.TextBounds.X + 40 > Window.Frame.Size.X.Offset - 120 then
+            Dialog.Root.Size = UDim2.fromOffset(Window.Frame.Size.X.Offset - 120, 165)
+            Content.TextWrapped = true
+            Dialog.Root.Size = UDim2.fromOffset(Window.Frame.Size.X.Offset - 120, Content.TextBounds.Y + 150)
+        end
+
+        for _, Button in next, Config.Buttons do
+            Dialog:Button(Button.Title, Button.Callback)
+        end
+
+        Dialog:Open()
     end
 
     return Window
