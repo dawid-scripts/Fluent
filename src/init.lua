@@ -21,6 +21,7 @@ local GUI = New("ScreenGui", {
 ProtectGui(GUI);
 
 local Library = {
+    Version = "1.0.0",
     Theme = "Dark",
     Acrylic = true,
     OpenFrames = {},
@@ -29,8 +30,8 @@ local Library = {
 
 function Library:SafeCallback(Function, ...)
     if (not Function) then
-        return;
-    end;
+        return
+    end
 
     local Success, Event = pcall(Function, ...);
     if not Success then
@@ -69,6 +70,11 @@ for _, ElementComponent in ipairs(Elements) do
 end
 
 function Library:CreateWindow(Config)
+    if Library.WindowFrame then
+        print("You cannot create more than one window.")
+        return
+    end
+
     local Window = {
         Tabs = {},
         Containers = {},
@@ -120,12 +126,13 @@ function Library:CreateWindow(Config)
             Parent = Dialog.Root,
             ClipsDescendants = false,
             ThemeTag = {
-                TextColor3 = "ElementTitle"
+                TextColor3 = "Text"
             }
         })
 
         New("UISizeConstraint", {
             MinSize = Vector2.new(300, 165),
+            MaxSize = Vector2.new(620, math.huge),
             Parent = Dialog.Root
         })
 
@@ -164,7 +171,7 @@ end
 function Library:ToggleAcrylic(Value)
     if Library.WindowFrame then
         Library.Acrylic = Value
-        Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.4 or 0
+        --Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.4 or 0
         Library.WindowFrame.AcrylicPaint.Model.Transparency = Value and 0.98 or 1
         if Value then Acrylic.Enable() else Acrylic.Disable() end
     end
