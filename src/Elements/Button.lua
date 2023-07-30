@@ -22,7 +22,7 @@ function Element:New(Config)
         BackgroundTransparency = 1,
         Parent = ButtonFrame.Frame,
         ThemeTag = {
-            ImageColor3 = "ElementTitle"
+            ImageColor3 = "Text"
         }
     })
     

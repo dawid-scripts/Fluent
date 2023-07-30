@@ -48,6 +48,7 @@ local Creator = {
             TextSize = 14
         },
         ImageLabel = {
+            BackgroundTransparency = 1,
             BackgroundColor3 = Color3.new(1, 1, 1),
             BorderColor3 = Color3.new(0, 0, 0),
             BorderSizePixel = 0

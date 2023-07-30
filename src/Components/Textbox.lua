@@ -5,42 +5,40 @@ local New = Creator.New
 
 local Spring = Flipper.Spring.new
 
-return function(Theme, Parent)
-    local Button = {}
+return function(Parent)
+    local Textbox = {}
 
-    Button.Title = New("TextLabel", {
+    Textbox.Input = New("TextBox", {
         FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
         TextColor3 = Color3.fromRGB(200, 200, 200),
         TextSize = 14,
         TextWrapped = true,
-        TextXAlignment = Enum.TextXAlignment.Center,
+        TextXAlignment = Enum.TextXAlignment.Left,
         TextYAlignment = Enum.TextYAlignment.Center,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Size = UDim2.fromScale(1, 1),
+        Position = UDim2.fromOffset(10, 0),
         ThemeTag = {
             TextColor3 = "Text"
         }
     })
 
-    Button.HoverFrame = New("Frame", {
-        Size = UDim2.fromScale(1, 1),
-        BackgroundTransparency = 1,
+    Textbox.Indicator = New("Frame", {
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 1, 0),
+        AnchorPoint = Vector2.new(0, 1),
         ThemeTag = {
-            BackgroundColor3 = "Hover"
+            BackgroundColor3 = "SubText"
         }
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(0, 4)
-        })
     })
 
-    Button.Frame = New("TextButton", {
+    Textbox.Frame = New("CanvasGroup", {
         Size = UDim2.new(0, 0, 0, 32),
         Parent = Parent,
         ThemeTag = {
-            BackgroundColor3 = "Main"
+            BackgroundColor3 = "Foreground"
         }
     }, {
         New("UICorner", {
@@ -53,15 +51,9 @@ return function(Theme, Parent)
                 Color = "Border"
             }
         }),
-        Button.HoverFrame,
-        Button.Title
+        Textbox.Indicator,
+        Textbox.Input
     })
 
-    local Motor, SetTransparency = Creator.SpringMotor(1, Button.HoverFrame, "BackgroundTransparency")
-    Creator.AddSignal(Button.Frame.MouseEnter, function() SetTransparency(0.97) end)
-    Creator.AddSignal(Button.Frame.MouseLeave, function() SetTransparency(1) end)
-    Creator.AddSignal(Button.Frame.MouseButton1Down, function() SetTransparency(1) end)
-    Creator.AddSignal(Button.Frame.MouseButton1Up, function()  SetTransparency(0.97) end)
-
-    return Button
+    return Textbox
 end

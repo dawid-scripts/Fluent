@@ -51,13 +51,13 @@ function Dialog:Create()
         Size = UDim2.new(1, 0, 0, 70),
         Position = UDim2.new(0, 0, 1, -70),
         ThemeTag = {
-            BackgroundColor3 = "DialogHolder"
+            BackgroundColor3 = "Background"
         }
     }, {
         New("Frame", {
             Size = UDim2.new(1, 0, 0, 1),
             ThemeTag = {
-                BackgroundColor3 = "DialogLine"
+                BackgroundColor3 = "Border"
             }
         }),
         NewDialog.ButtonHolder
@@ -78,7 +78,7 @@ function Dialog:Create()
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         ThemeTag = {
-            TextColor3 = "ElementTitle"
+            TextColor3 = "Text"
         }
     }) 
 
@@ -95,7 +95,7 @@ function Dialog:Create()
         GroupTransparency = 1,
         Parent = NewDialog.TintFrame,
         ThemeTag = {
-            BackgroundColor3 = "DialogBackground"
+            BackgroundColor3 = "Main"
         }
     }, {
         New("UICorner", {
@@ -104,7 +104,7 @@ function Dialog:Create()
         New("UIStroke", {
             Transparency = 0.5,
             ThemeTag = {
-                Color = "DialogStroke"
+                Color = "ForeBorder"
             }
         }),
         NewDialog.Scale,
@@ -132,6 +132,8 @@ function Dialog:Create()
 
     function NewDialog:Button(Title, Callback)
         NewDialog.Buttons = NewDialog.Buttons + 1
+        Title = Title or "Button"
+        Callback = Callback or function() end
 
         local Button = require(Root.Components.Button)("", NewDialog.ButtonHolder)
         Button.Title.Text = Title

@@ -22,7 +22,7 @@ return function(Title, Desc, Parent, Hover)
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         ThemeTag = {
-            TextColor3 = "ElementTitle"
+            TextColor3 = "Text"
         }
     })
 
@@ -38,7 +38,7 @@ return function(Title, Desc, Parent, Hover)
         BackgroundTransparency = 1,
         Size = UDim2.new(1, 0, 0, 14),
         ThemeTag = {
-            TextColor3 = "ElementDesc"
+            TextColor3 = "SubText"
         }
     })
 
@@ -61,6 +61,15 @@ return function(Title, Desc, Parent, Hover)
         Element.DescLabel,
     })
 
+    Element.Border = New("UIStroke", {
+        Transparency = 0.5,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Color = Color3.fromRGB(0, 0, 0),
+        ThemeTag = {
+            Color = "AcrylicBorder"
+        }
+    })
+
     Element.Frame = New("TextButton", {
         Size = UDim2.new(1, 0, 0, 0),
         BackgroundTransparency = 0.89,
@@ -69,20 +78,13 @@ return function(Title, Desc, Parent, Hover)
         AutomaticSize = Enum.AutomaticSize.Y,
         Text = "",
         ThemeTag = {
-            BackgroundColor3 = "ElementBackground"
+            BackgroundColor3 = "AcrylicForeground"
         }
     }, {
         New("UICorner", {
             CornerRadius = UDim.new(0, 4)
         }),
-        New("UIStroke", {
-            Transparency = 0.85,
-            ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-            Color = Color3.fromRGB(0, 0, 0),
-            ThemeTag = {
-                Color = "ElementStroke"
-            }
-        }),
+        Element.Border,
         Element.LabelHolder
     })
 

@@ -30,12 +30,11 @@ return function(props)
         }),
 
         New("Frame", {
-            BackgroundTransparency = 0.35,
+            BackgroundTransparency = 0.4,
             Size = UDim2.fromScale(1, 1),
             Name = "Background",
-            BorderSizePixel = 0,
             ThemeTag = {
-                BackgroundColor3 = "WindowBackground"
+                BackgroundColor3 = "AcrylicMain"
             }
         }, {
             New("UICorner", {
@@ -45,9 +44,8 @@ return function(props)
 
         New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            BackgroundTransparency = 0.35,
+            BackgroundTransparency = 0.4,
             Size = UDim2.fromScale(1, 1),
-            BorderSizePixel = 0,
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(0, 8)
@@ -56,7 +54,7 @@ return function(props)
             New("UIGradient", {
                 Rotation = 90,
                 ThemeTag = {
-                    Color = "WindowGradient"
+                    Color = "AcrylicGradient"
                 }
             })
         }),
@@ -82,7 +80,7 @@ return function(props)
             Size = UDim2.fromScale(1, 1),
             BackgroundTransparency = 1,
             ThemeTag = {
-                ImageTransparency = "NoiseTransparency"
+                ImageTransparency = "AcrylicNoise"
             }
         }, {
             New("UICorner", {
@@ -99,11 +97,10 @@ return function(props)
                 CornerRadius = UDim.new(0, 8)
             }),
             New("UIStroke", {
-                Color = Color3.fromHex("#404040"),
                 Transparency = 0.5,
                 Thickness = 1.5,
                 ThemeTag = {
-                    Color = "WindowStroke"
+                    Color = "AcrylicBorder"
                 }
             })
         })

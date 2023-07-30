@@ -31,17 +31,14 @@ function Element:New(Config)
     local SliderFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, false)
     SliderFrame.DescLabel.Size = UDim2.new(1, -170, 0, 14)
 
-    local SliderDot = New("Frame", {
+    local SliderDot = New("ImageLabel", {
         AnchorPoint = Vector2.new(0, 0.5),
         Position = UDim2.new(0, -7, 0.5, 0),
         Size = UDim2.fromOffset(14, 14),
+        Image = "http://www.roblox.com/asset/?id=12266946128",
         ThemeTag = {
-            BackgroundColor3 = "Accent"
+            ImageColor3 = "Accent"
         }
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(1, 0),
-        })
     })
 
     local SliderRail = New("Frame", {
@@ -75,7 +72,7 @@ function Element:New(Config)
         Position = UDim2.new(0, -4, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         ThemeTag = {
-            TextColor3 = "ElementDesc"
+            TextColor3 = "SubText"
         }
     })
 
@@ -86,7 +83,7 @@ function Element:New(Config)
         BackgroundTransparency = 0.4,
         Parent = SliderFrame.Frame,
         ThemeTag = {
-            BackgroundColor3 = "SliderFrame"
+            BackgroundColor3 = "AcrylicForeground"
         }
     }, {
         New("UICorner", {

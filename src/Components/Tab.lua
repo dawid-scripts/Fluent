@@ -28,7 +28,7 @@ function TabModule:New(Title, Icon, Parent)
         BackgroundColor3 = Color3.fromRGB(130, 130, 130),
         Parent = Parent,
         ThemeTag = {
-            BackgroundColor3 = "TabBackground"
+            BackgroundColor3 = "AcrylicForeground"
         }
     }, {
         New("UICorner", {
@@ -52,7 +52,7 @@ function TabModule:New(Title, Icon, Parent)
             Size = UDim2.new(1, -12, 1, 0),
             BackgroundTransparency = 1,
             ThemeTag = {
-                TextColor3 = "TabTitle"
+                TextColor3 = "Text"
             }
         }),
         New("ImageLabel", {
@@ -62,7 +62,7 @@ function TabModule:New(Title, Icon, Parent)
             BackgroundTransparency = 1,
             Image = if Icon then Icon else nil,
             ThemeTag = {
-                ImageColor3 = "TabIcon"
+                ImageColor3 = "Text"
             }
         })
     })

@@ -22,7 +22,7 @@ return function(Config)
             Position = Pos,
             Text = "",
             ThemeTag = {
-                BackgroundColor3 = "BarLineColor"
+                BackgroundColor3 = "Text"
             }
         }, {
             New("UICorner", {
@@ -36,7 +36,7 @@ return function(Config)
                 BackgroundTransparency = 1,
                 Name = "Icon",
                 ThemeTag = {
-                    ImageColor3 = "BarTitle"
+                    ImageColor3 = "Text"
                 }
             })
         })
@@ -74,7 +74,6 @@ return function(Config)
             New("TextLabel", {
                 RichText = true,
                 Text = Config.Title,
-                TextTransparency = 0,
                 FontFace = Font.new(
                     "rbxasset://fonts/families/GothamSSm.json",
                     Enum.FontWeight.Regular,
@@ -87,13 +86,13 @@ return function(Config)
                 AutomaticSize = Enum.AutomaticSize.X,
                 BackgroundTransparency = 1,
                 ThemeTag = {
-                    TextColor3 = "BarTitle"
+                    TextColor3 = "Text"
                 }
             }),
             New("TextLabel", {
                 RichText = true,
                 Text = Config.SubTitle,
-                TextTransparency = 0,
+                TextTransparency = 0.4,
                 FontFace = Font.new(
                     "rbxasset://fonts/families/GothamSSm.json",
                     Enum.FontWeight.Regular,
@@ -106,18 +105,16 @@ return function(Config)
                 AutomaticSize = Enum.AutomaticSize.X,
                 BackgroundTransparency = 1,
                 ThemeTag = {
-                    TextColor3 = "BarSubTitle"
+                    TextColor3 = "Text"
                 }
             })
         }),
         New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            BackgroundTransparency = 0.95,
+            BackgroundTransparency = 0.5,
             Size= UDim2.new(1, 0, 0, 1),
             Position = UDim2.new(0, 0, 1, 0),
             ThemeTag = {
-                BackgroundColor3 = "BarLineColor",
-                BackgroundTransparency = "BarLineTransparency"
+                BackgroundColor3 = "AcrylicForeBorder"
             }
         })
     })

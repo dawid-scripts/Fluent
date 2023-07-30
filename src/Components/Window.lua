@@ -85,7 +85,7 @@ return function(Config)
         Position = UDim2.fromOffset(Config.TabWidth + 26, 56),
         BackgroundTransparency = 1,
         ThemeTag = {
-            TextColor3 = "BarTitle"
+            TextColor3 = "Text"
         }
     })
 
@@ -171,14 +171,23 @@ return function(Config)
         Window.ContainerHolder.Position = UDim2.fromOffset(Config.TabWidth + 26, value)
     end)
 
+    local OldSizeX
+    local OldSizeY
     Window.Maximize = function(Value, NoPos, Instant)
         Window.Maximized = Value
         Window.TitleBar.MaxButton.Frame.Icon.Image = Value and Assets.Restore or Assets.Max
 
+        if Value then
+            OldSizeX = Window.Size.X.Offset
+            OldSizeY = Window.Size.Y.Offset
+        end
+        local SizeX = Value and Camera.ViewportSize.X  or OldSizeX
+        local SizeY = Value and Camera.ViewportSize.Y or OldSizeY
         SizeMotor:setGoal({
-			X = Flipper[Instant and "Instant" or "Spring"].new(Value and Camera.ViewportSize.X  or Window.Size.X.Offset, {frequency = 6}),
-			Y = Flipper[Instant and "Instant" or "Spring"].new(Value and Camera.ViewportSize.Y or Window.Size.Y.Offset, {frequency = 6}),
+			X = Flipper[Instant and "Instant" or "Spring"].new(SizeX, {frequency = 6}),
+			Y = Flipper[Instant and "Instant" or "Spring"].new(SizeY, {frequency = 6}),
 		})
+        Window.Size = UDim2.fromOffset(SizeX, SizeY)
 
         if not NoPos then
             PosMotor:setGoal({
@@ -196,8 +205,8 @@ return function(Config)
         
             if Window.Maximized then
                 StartPos = UDim2.fromOffset(
-                    Mouse.X - (Mouse.X * ((Window.Size.X.Offset - 100) / Window.Root.AbsoluteSize.X)), 
-                    Mouse.Y - (Mouse.Y * (Window.Size.Y.Offset / Window.Root.AbsoluteSize.Y))
+                    Mouse.X - (Mouse.X * ((OldSizeX - 100) / Window.Root.AbsoluteSize.X)), 
+                    Mouse.Y - (Mouse.Y * (OldSizeY / Window.Root.AbsoluteSize.Y))
                 )
             end
 

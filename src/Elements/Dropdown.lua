@@ -45,7 +45,7 @@ function Element:New(Config)
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         ThemeTag = {
-            TextColor3 = "ElementTitle"
+            TextColor3 = "Text"
         }
     })
     
@@ -56,7 +56,7 @@ function Element:New(Config)
         Position = UDim2.new(1, -8, 0.5, 0),
         BackgroundTransparency = 1,
         ThemeTag = {
-            ImageColor3 = "ElementDesc"
+            ImageColor3 = "SubText"
         }
     })
     
@@ -67,17 +67,17 @@ function Element:New(Config)
         BackgroundTransparency = 0.9,
         Parent = DropdownFrame.Frame,
         ThemeTag = {
-            BackgroundColor3 = "DropdownFrame"
+            BackgroundColor3 = "AcrylicForeground"
         }
     }, {
         New("UICorner", {
             CornerRadius = UDim.new(0, 5)
         }),
         New("UIStroke", {
-            Transparency = 0.88,
+            Transparency = 0.5,
             ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
             ThemeTag = {
-                Color = "DropdownStroke"
+                Color = "AcrylicBorder"
             }
         }),
         DropdownIco,
@@ -107,7 +107,7 @@ function Element:New(Config)
     local DropdownHolderFrame = New("Frame", {
         Size = UDim2.fromScale(1, 0.6),
         ThemeTag = {
-            BackgroundColor3 = "DropdownHolder"
+            BackgroundColor3 = "Main"
         }
     }, {
         DropdownScrollFrame,
@@ -117,7 +117,7 @@ function Element:New(Config)
         New("UIStroke", {
             ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
             ThemeTag = {
-                Color = "DropdownHolderStroke"
+                Color = "Background"
             }
         }),
         New("ImageLabel", {
@@ -274,7 +274,7 @@ function Element:New(Config)
                 Size = UDim2.fromScale(1, 1),
                 Position = UDim2.fromOffset(10, 0),
                 ThemeTag = {
-                    TextColor3 = "ElementTitle"
+                    TextColor3 = "Text"
                 }
             })
 
@@ -285,7 +285,7 @@ function Element:New(Config)
                 Text = "",
                 Parent = DropdownScrollFrame,
                 ThemeTag = {
-                    BackgroundColor3 = "ElementBackground"
+                    BackgroundColor3 = "Hover"
                 }
             }, {
                 ButtonSelector,

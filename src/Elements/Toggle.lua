@@ -23,24 +23,21 @@ function Element:New(Config)
     local ToggleFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, true)
     ToggleFrame.DescLabel.Size = UDim2.new(1, -54, 0, 14)
 
-    local ToggleCircle = New("Frame", {
+    local ToggleCircle = New("ImageLabel", {
         AnchorPoint = Vector2.new(0, 0.5),
         Size = UDim2.fromOffset(14, 14),
         Position = UDim2.new(0, 2, 0.5, 0),
-        BackgroundTransparency = 0.4,
+        Image = "http://www.roblox.com/asset/?id=12266946128",
+        ImageTransparency = 0.5,
         ThemeTag = {
-            BackgroundColor3 = "ToggleStroke"
+            ImageColor3 = "AcrylicForeground"
         }
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(0, 7)
-        })
     })
 
-    local ToggleStroke = New("UIStroke", {
-        Transparency = 0.4,
+    local ToggleBorder = New("UIStroke", {
+        Transparency = 0.5,
         ThemeTag = {
-            Color = "ToggleStroke"
+            Color = "AcrylicForeground"
         }
     })
 
@@ -57,7 +54,7 @@ function Element:New(Config)
         New("UICorner", {
             CornerRadius = UDim.new(0, 9)
         }),
-        ToggleStroke, 
+        ToggleBorder, 
         ToggleCircle
     })
 
@@ -72,11 +69,11 @@ function Element:New(Config)
         Value = (not not Value);
         Toggle.Value = Value;
 
-        Creator.OverrideTag(ToggleStroke, { Color = Toggle.Value and "Accent" or "ToggleStroke" })
-        Creator.OverrideTag(ToggleCircle, { BackgroundColor3 = Toggle.Value and "ToggleToggled" or "ToggleStroke" })
+        Creator.OverrideTag(ToggleBorder, { Color = Toggle.Value and "Accent" or "AcrylicForeground" })
+        Creator.OverrideTag(ToggleCircle, { ImageColor3 = Toggle.Value and "ToggleToggled" or "AcrylicForeground" })
         TweenService:Create(ToggleCircle, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{ Position = UDim2.new(0, Toggle.Value and 19 or 2, 0.5, 0) }):Play()
         TweenService:Create(ToggleSlider, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{ BackgroundTransparency = Toggle.Value and 0 or 1 }):Play()
-        ToggleCircle.BackgroundTransparency = Toggle.Value and 0 or 0.4
+        ToggleCircle.ImageTransparency = Toggle.Value and 0 or 0.5
 
         Library:SafeCallback(Toggle.Callback, Toggle.Value)
         Library:SafeCallback(Toggle.Changed, Toggle.Value)
