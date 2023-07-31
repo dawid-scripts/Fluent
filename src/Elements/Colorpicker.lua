@@ -76,9 +76,35 @@ function Element:New(Config)
         local function CreateInput()
             local Box = require(Components.Textbox)()
             Box.Frame.Parent = Dialog.Root
-            Box.Frame.Size = UDim2.new(0, 100, 0, 32)
+            Box.Frame.Size = UDim2.new(0, 90, 0, 32)
 
             return Box
+        end
+
+        local function CreateInputLabel(Text, Pos)
+            return New("TextLabel", {
+                FontFace = Font.new(
+                    "rbxasset://fonts/families/GothamSSm.json",
+                    Enum.FontWeight.Medium,
+                    Enum.FontStyle.Normal
+                ),
+                Text = Text,
+                TextColor3 = Color3.fromRGB(240, 240, 240),
+                TextSize = 13,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Size = UDim2.new(1, 0, 0, 32),
+                Position = Pos,
+                BackgroundTransparency = 1,
+                Parent = Dialog.Root,
+                ThemeTag = {
+                    TextColor3 = "Text"
+                }
+            })
+        end
+
+        local function GetRGB()
+            local Value = Color3.fromHSV(Hue, Sat, Vib)
+            return {R = math.floor(Value.r * 255), G = math.floor(Value.g * 255), B = math.floor(Value.b * 255)}
         end
 
         local SatCursor = New("ImageLabel", {
@@ -196,6 +222,25 @@ function Element:New(Config)
 
         local HexInput = CreateInput()
         HexInput.Frame.Position = UDim2.fromOffset(Config.Transparency and 260 or 240, 55)
+        CreateInputLabel("Hex", UDim2.fromOffset(Config.Transparency and 360 or 340, 55))
+
+        local RedInput = CreateInput()
+        RedInput.Frame.Position = UDim2.fromOffset(Config.Transparency and 260 or 240, 95)
+        CreateInputLabel("Red", UDim2.fromOffset(Config.Transparency and 360 or 340, 95))
+
+        local GreenInput = CreateInput()
+        GreenInput.Frame.Position = UDim2.fromOffset(Config.Transparency and 260 or 240, 135)
+        CreateInputLabel("Green", UDim2.fromOffset(Config.Transparency and 360 or 340, 135))
+
+        local BlueInput = CreateInput()
+        BlueInput.Frame.Position = UDim2.fromOffset(Config.Transparency and 260 or 240, 175)
+        CreateInputLabel("Blue", UDim2.fromOffset(Config.Transparency and 360 or 340, 175))
+
+        if Config.Transparency then
+            local AlphaInput = CreateInput()
+            AlphaInput.Frame.Position = UDim2.fromOffset(260, 215)
+            CreateInputLabel("Alpha", UDim2.fromOffset(360, 215))
+        end
 
         local TransparencySlider, TransparencyDrag, TransparencyColor
         if Config.Transparency then 
@@ -254,6 +299,10 @@ function Element:New(Config)
             HueDrag.Position = UDim2.new(0, 0, Hue, 0)
             SatCursor.Position = UDim2.new(Sat, 0, 1 - Vib, 0)
             DialogDisplayFrame.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
+            HexInput.Input.Text = '#' .. Color3.fromHSV(Hue, Sat, Vib):ToHex()
+            RedInput.Input.Text = GetRGB()["R"]
+            GreenInput.Input.Text = GetRGB()["G"]
+            BlueInput.Input.Text = GetRGB()["B"]
 
             if Config.Transparency then
                 TransparencyColor.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
@@ -261,6 +310,55 @@ function Element:New(Config)
                 TransparencyDrag.Position = UDim2.new(0, 0, Transparency, 0)
             end
         end
+
+        Creator.AddSignal(HexInput.Input.FocusLost, function(Enter)
+            if Enter then
+                local Success, Result = pcall(Color3.fromHex, HexInput.Input.Text)
+                if Success and typeof(Result) == "Color3" then
+                    Hue, Sat, Vib = Color3.toHSV(Result)
+                end
+            end
+            Display()
+        end)
+
+        Creator.AddSignal(RedInput.Input.FocusLost, function(Enter)
+            if Enter then
+                local CurrentColor = GetRGB()
+                local Success, Result = pcall(Color3.fromRGB, RedInput.Input.Text, CurrentColor["G"], CurrentColor["B"])
+                if Success and typeof(Result) == "Color3" then
+                    if tonumber(RedInput.Input.Text) <= 255 then
+                        Hue, Sat, Vib = Color3.toHSV(Result)
+                    end
+                end
+            end
+            Display()
+        end)
+
+        Creator.AddSignal(GreenInput.Input.FocusLost, function(Enter)
+            if Enter then
+                local CurrentColor = GetRGB()
+                local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], GreenInput.Input.Text, CurrentColor["B"])
+                if Success and typeof(Result) == "Color3" then
+                    if tonumber(GreenInput.Input.Text) <= 255 then
+                        Hue, Sat, Vib = Color3.toHSV(Result)
+                    end
+                end
+            end
+            Display()
+        end)
+
+        Creator.AddSignal(BlueInput.Input.FocusLost, function(Enter)
+            if Enter then
+                local CurrentColor = GetRGB()
+                local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], CurrentColor["G"], BlueInput.Input.Text)
+                if Success and typeof(Result) == "Color3" then
+                    if tonumber(BlueInput.Input.Text) <= 255 then
+                        Hue, Sat, Vib = Color3.toHSV(Result)
+                    end
+                end
+            end
+            Display()
+        end)
 
         Creator.AddSignal(SatVibMap.InputBegan, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then

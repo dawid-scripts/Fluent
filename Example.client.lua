@@ -31,7 +31,7 @@ local Tabs = {
 }
 
 local function FormatRGB(Value)
-    return {math.floor(Value.r * 255), math.floor(Value.g * 255), math.floor(Value.g * 255)}
+    return {math.floor(Value.r * 255), math.floor(Value.g * 255), math.floor(Value.b * 255)}
 end
 
 do

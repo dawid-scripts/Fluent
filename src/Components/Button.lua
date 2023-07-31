@@ -5,7 +5,8 @@ local New = Creator.New
 
 local Spring = Flipper.Spring.new
 
-return function(Theme, Parent)
+return function(Theme, Parent, DialogCheck)
+    DialogCheck = DialogCheck or false
     local Button = {}
 
     Button.Title = New("TextLabel", {
@@ -57,7 +58,7 @@ return function(Theme, Parent)
         Button.Title
     })
 
-    local Motor, SetTransparency = Creator.SpringMotor(1, Button.HoverFrame, "BackgroundTransparency")
+    local Motor, SetTransparency = Creator.SpringMotor(1, Button.HoverFrame, "BackgroundTransparency", DialogCheck)
     Creator.AddSignal(Button.Frame.MouseEnter, function() SetTransparency(0.97) end)
     Creator.AddSignal(Button.Frame.MouseLeave, function() SetTransparency(1) end)
     Creator.AddSignal(Button.Frame.MouseButton1Down, function() SetTransparency(1) end)

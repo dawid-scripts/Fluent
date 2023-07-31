@@ -31,7 +31,7 @@ function Dialog:Create()
         })
     })
 
-    local TintMotor, TintTransparency = Creator.SpringMotor(1, NewDialog.TintFrame, "BackgroundTransparency")
+    local TintMotor, TintTransparency = Creator.SpringMotor(1, NewDialog.TintFrame, "BackgroundTransparency", true)
 
     NewDialog.ButtonHolder = New("Frame", {
         Size = UDim2.new(1, -40, 1, -40),
@@ -115,6 +115,7 @@ function Dialog:Create()
     local RootMotor, RootTransparency = Creator.SpringMotor(1, NewDialog.Root, "GroupTransparency")
 
     function NewDialog:Open()
+        require(Root).DialogOpen = true
         NewDialog.Scale.Scale = 1.1
         TintTransparency(0.75)
         RootTransparency(0)
@@ -122,6 +123,7 @@ function Dialog:Create()
     end
 
     function NewDialog:Close()
+        require(Root).DialogOpen = false
         TintTransparency(1)
         RootTransparency(1)
         Scale(1.1)
@@ -135,7 +137,7 @@ function Dialog:Create()
         Title = Title or "Button"
         Callback = Callback or function() end
 
-        local Button = require(Root.Components.Button)("", NewDialog.ButtonHolder)
+        local Button = require(Root.Components.Button)("", NewDialog.ButtonHolder, true)
         Button.Title.Text = Title
 
         for _, Btn in next, NewDialog.ButtonHolder:GetChildren() do

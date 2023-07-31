@@ -18,13 +18,14 @@ local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end);
 local GUI = New("ScreenGui", {
     Parent = if RunService:IsStudio() then LocalPlayer.PlayerGui else game:GetService("CoreGui")
 })
-ProtectGui(GUI);
+ProtectGui(GUI)
 
 local Library = {
     Version = "1.0.0",
     Theme = "Dark",
-    Acrylic = true,
     OpenFrames = {},
+    Acrylic = true,
+    DialogOpen = false,
     GUI = GUI
 }
 

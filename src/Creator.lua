@@ -133,11 +133,17 @@ function Creator.New(Name, Properties, Children)
     return Object
 end
 
-function Creator.SpringMotor(Initial, Instance, Prop)
+function Creator.SpringMotor(Initial, Instance, Prop, IgnoreDialogCheck)
+    IgnoreDialogCheck = IgnoreDialogCheck or false
     local Motor = Flipper.SingleMotor.new(Initial)
     Motor:onStep(function(value) Instance[Prop] = value end)
 
     local function SetValue(Value)
+        if not IgnoreDialogCheck then
+            if Prop == "BackgroundTransparency" and require(Root).DialogOpen then
+                return
+            end
+        end
         Motor:setGoal(Flipper.Spring.new(Value, { frequency = 8 }))
     end
 
