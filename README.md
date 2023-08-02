@@ -10,10 +10,7 @@
 - Modern design
 - Many customization options
 - Almost any UI Element you would ever need 
-
 <br/>
-
-
 ## 🔌 Installation
 
 You can load Fluent through a GitHub Release:
@@ -21,9 +18,7 @@ You can load Fluent through a GitHub Release:
 ```lua
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 ```
-
 <br/>
-
 ## Credits
 
 - [richie0866/remote-spy](https://github.com/richie0866/remote-spy) - Assets for the UI, some of the code, bundler
