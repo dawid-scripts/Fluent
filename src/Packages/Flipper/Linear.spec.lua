@@ -7,11 +7,11 @@ return function()
 
 		local goal = Linear.new(1, { velocity = 1 })
 		motor:setGoal(goal)
-	
+
 		for _ = 1, 60 do
-			motor:step(1/60)
+			motor:step(1 / 60)
 		end
-		
+
 		it("should complete", function()
 			expect(motor._state.complete).to.equal(true)
 		end)
@@ -26,11 +26,11 @@ return function()
 
 		local goal = Linear.new(1, { velocity = 1 })
 		motor:setGoal(goal)
-	
+
 		for _ = 1, 59 do
-			motor:step(1/60)
+			motor:step(1 / 60)
 		end
-		
+
 		it("should be uncomplete", function()
 			expect(motor._state.complete).to.equal(false)
 		end)
@@ -41,11 +41,11 @@ return function()
 
 		local goal = Linear.new(0, { velocity = 1 })
 		motor:setGoal(goal)
-		
+
 		for _ = 1, 60 do
-			motor:step(1/60)
+			motor:step(1 / 60)
 		end
-		
+
 		it("should complete", function()
 			expect(motor._state.complete).to.equal(true)
 		end)

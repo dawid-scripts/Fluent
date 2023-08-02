@@ -14,17 +14,17 @@ return function()
 
 		motor:setGoal({
 			A = Instant.new(3),
-			B = Spring.new(4, { frequency = 7.5, dampingRatio = 1 })
+			B = Spring.new(4, { frequency = 7.5, dampingRatio = 1 }),
 		})
 
 		expect(motor._complete).to.equal(false)
 
-		motor:step(1/60)
+		motor:step(1 / 60)
 
 		expect(motor._complete).to.equal(false)
 
 		for _ = 1, 0.5 * 60 do
-			motor:step(1/60)
+			motor:step(1 / 60)
 		end
 
 		expect(motor._complete).to.equal(true)
@@ -41,13 +41,13 @@ return function()
 		end)
 
 		motor:setGoal({
-			A = Instant.new(1)
+			A = Instant.new(1),
 		})
 
 		expect(bool).to.equal(true)
 
 		motor:setGoal({
-			A = Instant.new(1)
+			A = Instant.new(1),
 		})
 
 		expect(bool).to.equal(false)

@@ -28,7 +28,7 @@ return function()
 		end)
 
 		local a, b = signal:wait()
-		
+
 		expect(a).to.equal(123)
 		expect(b).to.equal("hello")
 	end)

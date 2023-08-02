@@ -182,7 +182,7 @@ function Element:New(Config)
     end)
     
     
-    local ScrollFrame = self.Container
+    local ScrollFrame = self.ScrollFrame
     function Dropdown:Open()
         Dropdown.Opened = true
         ScrollFrame.ScrollingEnabled = false

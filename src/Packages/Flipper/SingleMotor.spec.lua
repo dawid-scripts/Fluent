@@ -6,7 +6,7 @@ return function()
 		local motor = SingleMotor.new(0, false)
 
 		motor:setGoal(Instant.new(5))
-		motor:step(1/60)
+		motor:step(1 / 60)
 
 		expect(motor._state.complete).to.equal(true)
 		expect(motor._state.value).to.equal(5)
@@ -21,7 +21,7 @@ return function()
 		end)
 
 		motor:setGoal(Instant.new(5))
-		motor:step(1/60)
+		motor:step(1 / 60)
 
 		expect(didComplete).to.equal(true)
 	end)

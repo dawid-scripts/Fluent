@@ -8,7 +8,7 @@ local Mouse = LocalPlayer:GetMouse()
 
 local Root = script
 local Creator = require(Root.Creator)
-local Elements = require(Root.Elements)
+local ElementsTable = require(Root.Elements)
 local Acrylic = require(Root.Acrylic)
 local Components = Root.Components
 
@@ -54,16 +54,25 @@ function Library:Round(Number, Factor)
     return Number:find('%.') and tonumber(Number:sub(1, Number:find('%.') + Factor)) or Number
 end
 
-local Addons = {}
-Addons.__index = Addons;
-Addons.__namecall = function(Table, Key, ...)
-    return Addons[Key](...)
+local Icons = require(Root.Icons).assets
+function Library:GetIcon(Name)
+    if Name ~= nil and Icons["lucide-" .. Name] then
+        return Icons["lucide-" .. Name]
+    end
+    return nil
 end
 
-for _, ElementComponent in ipairs(Elements) do
-    Addons["Add" .. ElementComponent.__type] = function(self, Config)
+local Elements = {}
+Elements.__index = Elements
+Elements.__namecall = function(Table, Key, ...)
+    return Elements[Key](...)
+end
+
+for _, ElementComponent in ipairs(ElementsTable) do
+    Elements["Add" .. ElementComponent.__type] = function(self, Config)
         ElementComponent.Container = self.Container
         ElementComponent.Type = self.Type
+        ElementComponent.ScrollFrame = self.ScrollFrame
         ElementComponent.Library = Library
         
         return ElementComponent:New(Config)
@@ -103,10 +112,28 @@ function Library:CreateWindow(Config)
     function Window:Tab(TabConfig)
         local Tab = {Type = "Tab"}
 
+        if Library:GetIcon(TabConfig.Icon) then
+            TabConfig.Icon = Library:GetIcon(TabConfig.Icon)
+        end
+
         local TabFrame = TabModule:New(TabConfig.Title, TabConfig.Icon, Window.Frame.TabHolder)
         Tab.Container = TabFrame.Container
+        Tab.ScrollFrame = Tab.Container
+        Tab.Type = "Tab"
 
-        setmetatable(Tab, Addons)
+        function Tab:AddSection(SectionTitle)
+            local Section = {}
+
+            local SectionFrame = require(Components.Section)(SectionTitle, TabFrame.Container)
+            Section.Container = SectionFrame.Container
+            Section.ScrollFrame = Tab.Container
+            Section.Type = "Section"
+
+            setmetatable(Section, Elements)
+            return Section
+        end
+
+        setmetatable(Tab, Elements)
         return Tab
     end
 

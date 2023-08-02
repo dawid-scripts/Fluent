@@ -40,7 +40,7 @@ function Signal:fire(...)
 	for _, thread in pairs(self._threads) do
 		coroutine.resume(thread, ...)
 	end
-	
+
 	self._threads = {}
 end
 

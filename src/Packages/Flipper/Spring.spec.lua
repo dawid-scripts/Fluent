@@ -7,11 +7,11 @@ return function()
 
 		local goal = Spring.new(1, { frequency = 2, dampingRatio = 0.75 })
 		motor:setGoal(goal)
-	
+
 		for _ = 1, 100 do
-			motor:step(1/60)
+			motor:step(1 / 60)
 		end
-		
+
 		it("should complete", function()
 			expect(motor._state.complete).to.equal(true)
 		end)
@@ -28,7 +28,7 @@ return function()
 		local goal = Spring.new(1, { frequency = 2, dampingRatio = 1 })
 
 		motor:setGoal(goal)
-		motor:step(1/60)
+		motor:step(1 / 60)
 
 		expect(motor._state.velocity < 0).to.equal(true)
 	end)

@@ -25,7 +25,10 @@ end
 function GroupMotor.new(initialValues, useImplicitConnections)
 	assert(initialValues, "Missing argument #1: initialValues")
 	assert(typeof(initialValues) == "table", "initialValues must be a table!")
-	assert(not initialValues.step, "initialValues contains disallowed property \"step\". Did you mean to put a table of values here?")
+	assert(
+		not initialValues.step,
+		'initialValues contains disallowed property "step". Did you mean to put a table of values here?'
+	)
 
 	local self = setmetatable(BaseMotor.new(), GroupMotor)
 
@@ -75,7 +78,7 @@ function GroupMotor:step(deltaTime)
 end
 
 function GroupMotor:setGoal(goals)
-	assert(not goals.step, "goals contains disallowed property \"step\". Did you mean to put a table of goals here?")
+	assert(not goals.step, 'goals contains disallowed property "step". Did you mean to put a table of goals here?')
 
 	self._complete = false
 	self._onStart:fire()

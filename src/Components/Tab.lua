@@ -22,6 +22,10 @@ function TabModule:New(Title, Icon, Parent)
         Name = Title
     }
 
+    if Icon == "" or nil then
+        Icon = nil
+    end
+
     Tab.Frame = New("TextButton", {
         Size = UDim2.new(1, 0, 0, 34),
         BackgroundTransparency = 1,
@@ -68,7 +72,8 @@ function TabModule:New(Title, Icon, Parent)
     })
 
     local ContainerLayout = New("UIListLayout", {
-        Padding = UDim.new(0, 5)
+        Padding = UDim.new(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
     })
 
     Tab.Container = New("ScrollingFrame", {

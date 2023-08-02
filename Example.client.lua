@@ -8,39 +8,23 @@ local Window = Main:CreateWindow({
 })
 
 local Tabs = {
-    Aim = Window:Tab({
-        Title = "Aim",
-        Icon = "rbxassetid://10709818534"
-    }),
-    Visual = Window:Tab({
-        Title = "Visual",
-        Icon = "rbxassetid://10723346959"
-    }),
-    Movement = Window:Tab({
-        Title = "Movement",
-        Icon = "rbxassetid://10709751939"
-    }),
-    Misc = Window:Tab({
-        Title = "Misc",
-        Icon = "rbxassetid://10734897250"
+    Main = Window:Tab({
+        Title = "Main",
+        Icon = ""
     }),
     Settings = Window:Tab({
         Title = "Settings",
-        Icon = "rbxassetid://10734950020"
+        Icon = "settings"
     })
 }
 
-local function FormatRGB(Value)
-    return {math.floor(Value.r * 255), math.floor(Value.g * 255), math.floor(Value.b * 255)}
-end
-
 do
-    Tabs.Aim:AddParagraph({
+    Tabs.Main:AddParagraph({
         Title = "Paragraph",
         Content = "This is a paragraph.\nSecond line!"
     })
 
-    Tabs.Aim:AddButton({
+    Tabs.Main:AddButton({
         Title = "Button",
         Description = "Very important button",
         Callback = function()
@@ -69,9 +53,9 @@ do
         end
     })
 
-    local Toggle = Tabs.Aim:AddToggle({Title = "Toggle", Default = false })
+    local Toggle = Tabs.Main:AddToggle({Title = "Toggle", Default = false })
     
-    local Slider = Tabs.Aim:AddSlider({
+    local Slider = Tabs.Main:AddSlider({
         Title = "Slider",
         Description = "This is a slider",
         Default = 2,
@@ -81,7 +65,7 @@ do
     })
 
 
-    local Dropdown = Tabs.Aim:AddDropdown({
+    local Dropdown = Tabs.Main:AddDropdown({
         Title = "Dropdown",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
         Multi = false,
@@ -90,7 +74,7 @@ do
 
     Dropdown:SetValue("four")
     
-    local MultiDropdown = Tabs.Aim:AddDropdown({
+    local MultiDropdown = Tabs.Main:AddDropdown({
         Title = "Dropdown",
         Description = "You can select multiple values.",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
@@ -104,12 +88,12 @@ do
         seven = false
     })
 
-    local Colorpicker = Tabs.Aim:AddColorpicker({
+    local Colorpicker = Tabs.Main:AddColorpicker({
         Title = "Colorpicker",
         Default = Color3.fromRGB(96, 205, 255)
     })
 
-    local TColorpicker = Tabs.Aim:AddColorpicker({
+    local TColorpicker = Tabs.Main:AddColorpicker({
         Title = "Colorpicker",
         Description = "but you can change the transparency.",
         Transparency = 0,
@@ -137,15 +121,15 @@ do
     end)
 
     Colorpicker:OnChanged(function()
-        local Color = FormatRGB(Colorpicker.Value)
-        print("Colorpicker changed:", Color[1], Color[2], Color[3])
+        print("Colorpicker changed:", TColorpicker.Value)
     end)
 
     TColorpicker:OnChanged(function()
-        local Color = FormatRGB(TColorpicker.Value)
+        game.Workspace:WaitForChild("Baseplate").Transparency = TColorpicker.Transparency
+        game.Workspace:WaitForChild("Baseplate").Color = TColorpicker.Value
         print(
-            "TColorpicker changed:", Color[1], Color[2], Color[3],
-            "Transparency:", Main:Round(TColorpicker.Transparency, 2) * 100 .. "%"
+            "TColorpicker changed:", TColorpicker.Value,
+            "Transparency:", TColorpicker.Transparency
         )
     end)
 end
