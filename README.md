@@ -1,7 +1,7 @@
-<h1 align="center">
-	<img src="Assets/logodark.png#gh-dark-mode-only" alt="fluent">
-    <img src="Assets/logolight.png#gh-light-mode-only" alt="fluent">
-</hi>
+<img align="center" src="Assets/logodark.png#gh-dark-mode-only" alt="fluent">
+<img align="center" src="Assets/logolight.png#gh-light-mode-only" alt="fluent">
+
+<br/>
 
 ## ⚡ Features
 
