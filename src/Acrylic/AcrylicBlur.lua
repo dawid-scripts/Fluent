@@ -38,16 +38,11 @@ local function createAcrylicBlur(distance)
 		local topLeft3D = viewportPointToWorld(topLeft, distance)
 		local topRight3D = viewportPointToWorld(topRight, distance)
 		local bottomRight3D = viewportPointToWorld(bottomRight, distance)
-		--[[
-		print(topLeft3D)
-		print(topRight3D)
-		print(bottomRight3D)
-		--]]
+
 		local width = (topRight3D - topLeft3D).Magnitude
 		local height = (topRight3D - bottomRight3D).Magnitude
 
-		model.CFrame =
-			CFrame.fromMatrix((topLeft3D + bottomRight3D) / 2, camera.XVector, camera.YVector, camera.ZVector)
+		model.CFrame = CFrame.fromMatrix((topLeft3D + bottomRight3D) / 2, camera.XVector, camera.YVector, camera.ZVector)
 		model.Mesh.Scale = Vector3.new(width, height, 0)
 	end
 

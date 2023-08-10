@@ -51,13 +51,13 @@ function Dialog:Create()
 		Size = UDim2.new(1, 0, 0, 70),
 		Position = UDim2.new(0, 0, 1, -70),
 		ThemeTag = {
-			BackgroundColor3 = "Background",
+			BackgroundColor3 = "DialogHolder",
 		},
 	}, {
 		New("Frame", {
 			Size = UDim2.new(1, 0, 0, 1),
 			ThemeTag = {
-				BackgroundColor3 = "Border",
+				BackgroundColor3 = "DialogHolderLine",
 			},
 		}),
 		NewDialog.ButtonHolder,
@@ -95,7 +95,7 @@ function Dialog:Create()
 		GroupTransparency = 1,
 		Parent = NewDialog.TintFrame,
 		ThemeTag = {
-			BackgroundColor3 = "Main",
+			BackgroundColor3 = "Dialog",
 		},
 	}, {
 		New("UICorner", {
@@ -104,7 +104,7 @@ function Dialog:Create()
 		New("UIStroke", {
 			Transparency = 0.5,
 			ThemeTag = {
-				Color = "ForeBorder",
+				Color = "DialogBorder",
 			},
 		}),
 		NewDialog.Scale,
@@ -142,14 +142,15 @@ function Dialog:Create()
 
 		for _, Btn in next, NewDialog.ButtonHolder:GetChildren() do
 			if Btn:IsA("TextButton") then
-				Btn.Size =
-					UDim2.new(1 / NewDialog.Buttons, -(((NewDialog.Buttons - 1) * 10) / NewDialog.Buttons), 0, 32)
+				Btn.Size = UDim2.new(1 / NewDialog.Buttons, -(((NewDialog.Buttons - 1) * 10) / NewDialog.Buttons), 0, 32)
 			end
 		end
 
 		Creator.AddSignal(Button.Frame.MouseButton1Click, function()
 			require(Root):SafeCallback(Callback)
-			NewDialog:Close()
+			pcall(function()
+				NewDialog:Close()
+			end)
 		end)
 
 		return Button

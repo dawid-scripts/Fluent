@@ -14,7 +14,7 @@ local Element = {}
 Element.__index = Element
 Element.__type = "Dropdown"
 
-function Element:New(Config)
+function Element:New(Idx, Config)
     local Library = self.Library
 
     local Dropdown = {
@@ -23,7 +23,8 @@ function Element:New(Config)
         Multi = Config.Multi,
         Buttons = {},
         Opened = false,
-        Type = "Dropdown"
+        Type = "Dropdown",
+        Callback = Config.Callback or function() end
     }
     
     local DropdownFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, false)
@@ -39,11 +40,12 @@ function Element:New(Config)
         TextColor3 = Color3.fromRGB(240, 240, 240),
         TextSize = 13,
         TextXAlignment = Enum.TextXAlignment.Left,
-        Size = UDim2.new(1, 0, 0, 14),
+        Size = UDim2.new(1, -30, 0, 14),
         Position = UDim2.new(0, 8, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
+        TextTruncate = Enum.TextTruncate.AtEnd,
         ThemeTag = {
             TextColor3 = "Text"
         }
@@ -61,13 +63,13 @@ function Element:New(Config)
     })
     
     local DropdownInner = New("TextButton", {
-        Size = UDim2.fromOffset(170, 30),
+        Size = UDim2.fromOffset(160, 30),
         Position = UDim2.new(1, -10, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundTransparency = 0.9,
         Parent = DropdownFrame.Frame,
         ThemeTag = {
-            BackgroundColor3 = "AcrylicForeground"
+            BackgroundColor3 = "DropdownFrame"
         }
     }, {
         New("UICorner", {
@@ -77,7 +79,7 @@ function Element:New(Config)
             Transparency = 0.5,
             ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
             ThemeTag = {
-                Color = "AcrylicBorder"
+                Color = "InElementBorder"
             }
         }),
         DropdownIco,
@@ -107,7 +109,7 @@ function Element:New(Config)
     local DropdownHolderFrame = New("Frame", {
         Size = UDim2.fromScale(1, 0.6),
         ThemeTag = {
-            BackgroundColor3 = "Main"
+            BackgroundColor3 = "DropdownHolder"
         }
     }, {
         DropdownScrollFrame,
@@ -117,7 +119,7 @@ function Element:New(Config)
         New("UIStroke", {
             ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
             ThemeTag = {
-                Color = "Background"
+                Color = "DropdownBorder"
             }
         }),
         New("ImageLabel", {
@@ -285,7 +287,7 @@ function Element:New(Config)
                 Text = "",
                 Parent = DropdownScrollFrame,
                 ThemeTag = {
-                    BackgroundColor3 = "Hover"
+                    BackgroundColor3 = "DropdownOption"
                 }
             }, {
                 ButtonSelector,
@@ -443,6 +445,7 @@ function Element:New(Config)
         Dropdown:Display()
     end
     
+    Library.Options[Idx] = Dropdown
     return Dropdown
 end
 

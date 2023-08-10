@@ -29,10 +29,9 @@ function TabModule:New(Title, Icon, Parent)
     Tab.Frame = New("TextButton", {
         Size = UDim2.new(1, 0, 0, 34),
         BackgroundTransparency = 1,
-        BackgroundColor3 = Color3.fromRGB(130, 130, 130),
         Parent = Parent,
         ThemeTag = {
-            BackgroundColor3 = "AcrylicForeground"
+            BackgroundColor3 = "Tab"
         }
     }, {
         New("UICorner", {

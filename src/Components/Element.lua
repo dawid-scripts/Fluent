@@ -50,8 +50,8 @@ return function(Title, Desc, Parent, Hover)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 		New("UIPadding", {
-			PaddingBottom = UDim.new(0, 12),
-			PaddingTop = UDim.new(0, 12),
+			PaddingBottom = UDim.new(0, 13),
+			PaddingTop = UDim.new(0, 13),
 		}),
 		Element.TitleLabel,
 		Element.DescLabel,
@@ -62,7 +62,7 @@ return function(Title, Desc, Parent, Hover)
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Color = Color3.fromRGB(0, 0, 0),
 		ThemeTag = {
-			Color = "AcrylicBorder",
+			Color = "ElementBorder",
 		},
 	})
 
@@ -75,7 +75,8 @@ return function(Title, Desc, Parent, Hover)
 		Text = "",
 		LayoutOrder = 7,
 		ThemeTag = {
-			BackgroundColor3 = "AcrylicForeground",
+			BackgroundColor3 = "Element",
+			BackgroundTransparency = "ElementTransparency"
 		},
 	}, {
 		New("UICorner", {
@@ -104,20 +105,21 @@ return function(Title, Desc, Parent, Hover)
 	Element:SetTitle(Title)
 	Element:SetDesc(Desc)
 
-	local Motor, SetTransparency = Creator.SpringMotor(0.89, Element.Frame, "BackgroundTransparency")
-
 	if Hover then
+		local Themes = Root.Themes
+		local Motor, SetTransparency = Creator.SpringMotor(Creator.GetThemeProperty("ElementTransparency"), Element.Frame, "BackgroundTransparency", false, true)
+
 		Creator.AddSignal(Element.Frame.MouseEnter, function()
-			SetTransparency(0.83)
+			SetTransparency(Creator.GetThemeProperty("ElementTransparency") - Creator.GetThemeProperty("HoverChange"))
 		end)
 		Creator.AddSignal(Element.Frame.MouseLeave, function()
-			SetTransparency(0.87)
+			SetTransparency(Creator.GetThemeProperty("ElementTransparency"))
 		end)
 		Creator.AddSignal(Element.Frame.MouseButton1Down, function()
-			SetTransparency(0.90)
+			SetTransparency(Creator.GetThemeProperty("ElementTransparency") + Creator.GetThemeProperty("HoverChange"))
 		end)
 		Creator.AddSignal(Element.Frame.MouseButton1Up, function()
-			SetTransparency(0.83)
+			SetTransparency(Creator.GetThemeProperty("ElementTransparency") - Creator.GetThemeProperty("HoverChange"))
 		end)
 	end
 

@@ -14,10 +14,13 @@ local Instant = Flipper.Instant.new
 local New = Creator.New
 
 return function(Config)
+	local Library = require(Root)
+
 	local Window = {
 		Minimized = false,
 		Maximized = false,
 		Size = Config.Size,
+		Library = Library,
 		Position = UDim2.fromOffset(
 			Camera.ViewportSize.X / 2 - Config.Size.X.Offset / 2,
 			Camera.ViewportSize.Y / 2 - Config.Size.Y.Offset / 2
@@ -111,12 +114,16 @@ return function(Config)
 		SubTitle = Config.SubTitle,
 		Parent = Window.Root,
 		Window = Window,
-	})
+	}, Library)
 
-	Window.AcrylicPaint.AddParent(Window.Root)
+	if Library.UseAcrylic then
+		Window.AcrylicPaint.AddParent(Window.Root)
+	end
 
 	Window.Destroy = function()
-		Window.AcrylicPaint.Model:Destroy()
+		if Library.UseAcrylic then
+			Window.AcrylicPaint.Model:Destroy()
+		end
 		Window.Root:Destroy()
 	end
 

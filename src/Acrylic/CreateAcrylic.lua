@@ -1,7 +1,10 @@
-local Creator = require(script.Parent.Parent.Creator)
+local Root = script.Parent.Parent
+local Creator = require(Root.Creator)
 
 local function createAcrylic()
-	return Creator.New("Part", {
+	local ProtectInstance = require(Root.Packages.ProtectInstance)
+
+	local Part = Creator.New("Part", {
 		Name = "Body",
 		Color = Color3.new(0, 0, 0),
 		Material = Enum.Material.Glass,
@@ -15,8 +18,14 @@ local function createAcrylic()
 		Creator.New("SpecialMesh", {
 			MeshType = Enum.MeshType.Brick,
 			Offset = Vector3.new(0, 0, -0.000001),
-		}),
+		})
 	})
+
+	if ProtectInstance then
+		ProtectInstance.ProtectInstance(Part)
+	end
+
+	return Part
 end
 
 return createAcrylic

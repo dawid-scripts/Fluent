@@ -9,9 +9,8 @@ local Element = {}
 Element.__index = Element
 Element.__type = "Toggle"
 
-function Element:New(Config)
+function Element:New(Idx, Config)
 	local Library = self.Library
-
 	assert(Config.Title, "Toggle - Missing Title")
 
 	local Toggle = {
@@ -30,14 +29,14 @@ function Element:New(Config)
 		Image = "http://www.roblox.com/asset/?id=12266946128",
 		ImageTransparency = 0.5,
 		ThemeTag = {
-			ImageColor3 = "AcrylicForeground",
+			ImageColor3 = "ToggleSlider",
 		},
 	})
 
 	local ToggleBorder = New("UIStroke", {
 		Transparency = 0.5,
 		ThemeTag = {
-			Color = "AcrylicForeground",
+			Color = "ToggleSlider",
 		},
 	})
 
@@ -69,8 +68,8 @@ function Element:New(Config)
 		Value = not not Value
 		Toggle.Value = Value
 
-		Creator.OverrideTag(ToggleBorder, { Color = Toggle.Value and "Accent" or "AcrylicForeground" })
-		Creator.OverrideTag(ToggleCircle, { ImageColor3 = Toggle.Value and "ToggleToggled" or "AcrylicForeground" })
+		Creator.OverrideTag(ToggleBorder, { Color = Toggle.Value and "Accent" or "ToggleSlider" })
+		Creator.OverrideTag(ToggleCircle, { ImageColor3 = Toggle.Value and "ToggleToggled" or "ToggleSlider" })
 		TweenService:Create(
 			ToggleCircle,
 			TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
@@ -92,6 +91,8 @@ function Element:New(Config)
 	end)
 
 	Toggle:SetValue(Toggle.Value)
+
+	Library.Options[Idx] = Toggle
 	return Toggle
 end
 

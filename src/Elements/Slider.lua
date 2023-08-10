@@ -9,7 +9,7 @@ local Element = {}
 Element.__index = Element
 Element.__type = "Slider"
 
-function Element:New(Config)
+function Element:New(Idx, Config)
 	local Library = self.Library
 	assert(Config.Title, "Slider - Missing Title.")
 	assert(Config.Default, "Slider - Missing default value.")
@@ -83,7 +83,7 @@ function Element:New(Config)
 		BackgroundTransparency = 0.4,
 		Parent = SliderFrame.Frame,
 		ThemeTag = {
-			BackgroundColor3 = "AcrylicForeground",
+			BackgroundColor3 = "SliderRail",
 		},
 	}, {
 		New("UICorner", {
@@ -133,6 +133,8 @@ function Element:New(Config)
 	end
 
 	Slider:SetValue(Config.Default)
+
+	Library.Options[Idx] = Slider
 	return Slider
 end
 

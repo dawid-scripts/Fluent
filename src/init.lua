@@ -11,6 +11,8 @@ local Creator = require(Root.Creator)
 local ElementsTable = require(Root.Elements)
 local Acrylic = require(Root.Acrylic)
 local Components = Root.Components
+local ProtectInstance = require(Root.Packages.ProtectInstance)
+local NotificationModule = require(Components.Notification)
 
 local New = Creator.New
 
@@ -22,11 +24,21 @@ ProtectGui(GUI)
 
 local Library = {
     Version = "1.0.0",
-    Theme = "Dark",
+
     OpenFrames = {},
-    Acrylic = true,
+    Options = {},
+    Themes = require(Root.Themes).Names,
+
+    Window = nil,
+    WindowFrame = nil,
+
+    Theme = "Dark",
     DialogOpen = false,
-    GUI = GUI
+    UseAcrylic = true,
+    Acrylic = true,
+    Transparency = true,
+
+    GUI = GUI,
 }
 
 function Library:SafeCallback(Function, ...)
@@ -69,13 +81,13 @@ Elements.__namecall = function(Table, Key, ...)
 end
 
 for _, ElementComponent in ipairs(ElementsTable) do
-    Elements["Add" .. ElementComponent.__type] = function(self, Config)
+    Elements["Add" .. ElementComponent.__type] = function(self, Idx, Config)
         ElementComponent.Container = self.Container
         ElementComponent.Type = self.Type
         ElementComponent.ScrollFrame = self.ScrollFrame
         ElementComponent.Library = Library
         
-        return ElementComponent:New(Config)
+        return ElementComponent:New(Idx, Config)
     end
 end
 
@@ -93,6 +105,11 @@ function Library:CreateWindow(Config)
         TabCount = 0
     }
 
+    Library.UseAcrylic = Config.Acrylic
+    if Library.UseAcrylic then
+        Acrylic.init()
+    end
+
     Window.Frame = require(Components.Window)({
         Parent = GUI,
         Size = Config.Size,
@@ -101,6 +118,9 @@ function Library:CreateWindow(Config)
         TabWidth = Config.TabWidth,
     })
     Library.WindowFrame = Window.Frame
+    Library.Window = Window
+
+    Library:SetTheme(Config.Theme)
 
     local TabModule = require(Components.Tab)
     TabModule.Window = Window
@@ -108,6 +128,8 @@ function Library:CreateWindow(Config)
 
     local DialogModule = require(Components.Dialog)
     DialogModule.Window = Window.Frame
+
+    NotificationModule:Init(Library.GUI)
 
     function Window:Tab(TabConfig)
         local Tab = {Type = "Tab"}
@@ -182,7 +204,7 @@ function Library:CreateWindow(Config)
 end
 
 function Library:SetTheme(Value)
-    if Library.WindowFrame then
+    if Library.WindowFrame and table.find(Library.Themes, Value) then
         Library.Theme = Value
         Creator.UpdateTheme()
     end
@@ -190,19 +212,37 @@ end
 
 function Library:Destroy()
     if Library.WindowFrame then
+        if ProtectInstance then
+            ProtectInstance.UnProtectInstance(Library.WindowFrame.AcrylicPaint.Model)
+        end
         Library.WindowFrame.AcrylicPaint.Model:Destroy()
         Creator.Disconnect()
-        GUI:Destroy()
+        Library.GUI:Destroy()
     end
 end
 
 function Library:ToggleAcrylic(Value)
     if Library.WindowFrame then
-        Library.Acrylic = Value
-        --Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.4 or 0
-        Library.WindowFrame.AcrylicPaint.Model.Transparency = Value and 0.98 or 1
-        if Value then Acrylic.Enable() else Acrylic.Disable() end
+        if Library.UseAcrylic then
+            Library.Acrylic = Value
+            Library.WindowFrame.AcrylicPaint.Model.Transparency = Value and 0.98 or 1
+            if Value then Acrylic.Enable() else Acrylic.Disable() end
+        end
     end
+end
+
+function Library:ToggleTransparency(Value)
+    if Library.WindowFrame then
+        Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.4 or 0
+    end
+end
+
+function Library:Notification(Config)
+    return NotificationModule:New(Config)
+end
+
+if getgenv then
+    getgenv().Fluent = Library
 end
 
 return Library

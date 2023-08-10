@@ -41,7 +41,7 @@ return function(Theme, Parent, DialogCheck)
 		Size = UDim2.new(0, 0, 0, 32),
 		Parent = Parent,
 		ThemeTag = {
-			BackgroundColor3 = "Main",
+			BackgroundColor3 = "DialogButton",
 		},
 	}, {
 		New("UICorner", {
@@ -51,7 +51,7 @@ return function(Theme, Parent, DialogCheck)
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 			Transparency = 0.65,
 			ThemeTag = {
-				Color = "Border",
+				Color = "DialogButtonBorder",
 			},
 		}),
 		Button.HoverFrame,

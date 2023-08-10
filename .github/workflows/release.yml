@@ -21,7 +21,7 @@ jobs:
       uses: pnpm/action-setup@v2.2.4
       with:
         version: 7.25.1
-        run_install: true
+        run_install: false
     
     - name: Setup Aftman
       uses: ok-nick/setup-aftman@v0.3.0
@@ -42,4 +42,4 @@ jobs:
         ACTIONS_STEP_DEBUG: true
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        asset_paths: '["dist/main.rbxm", "dist/main.lua", "dist/main-dev.lua"]'
+        asset_paths: '["dist/main.rbxm", "dist/main.lua"]'

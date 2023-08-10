@@ -16,14 +16,15 @@ local Element = {}
 Element.__index = Element
 Element.__type = "Colorpicker"
 
-function Element:New(Config)
+function Element:New(Idx, Config)
+	local Library = self.Library
 	assert(Config.Title, "Colorpicker - Missing Title")
 	assert(Config.Default, "AddColorPicker: Missing default value.")
 
 	local Colorpicker = {
 		Value = Config.Default,
 		Transparency = Config.Transparency or 0,
-		Type = "Config",
+		Type = "Colorpicker",
 		Title = type(Config.Title) == "string" and Config.Title or "Colorpicker",
 		Callback = Config.Callback or function(Color) end,
 	}
@@ -201,17 +202,17 @@ function Element:New(Config)
 		})
 
 		local HueDragHolder = New("Frame", {
-			Size = UDim2.new(1, 0, 1, -12),
-			Position = UDim2.fromOffset(0, 6),
+			Size = UDim2.new(1, 0, 1, -10),
+			Position = UDim2.fromOffset(0, 5),
 			BackgroundTransparency = 1
 		})
 
 		local HueDrag = New("ImageLabel", {
-			Size = UDim2.fromOffset(12, 12),
+			Size = UDim2.fromOffset(14, 14),
 			Image = "http://www.roblox.com/asset/?id=12266946128",
 			Parent = HueDragHolder,
 			ThemeTag = {
-				ImageColor3 = "Foreground",
+				ImageColor3 = "DialogInput",
 			}
 		})
 
@@ -253,17 +254,17 @@ function Element:New(Config)
 		local TransparencySlider, TransparencyDrag, TransparencyColor
 		if Config.Transparency then
 			local TransparencyDragHolder = New("Frame", {
-				Size = UDim2.new(1, 0, 1, -12),
-				Position = UDim2.fromOffset(0, 6),
+				Size = UDim2.new(1, 0, 1, -10),
+				Position = UDim2.fromOffset(0, 5),
 				BackgroundTransparency = 1
 			})
 
 			TransparencyDrag = New("ImageLabel", {
-				Size = UDim2.fromOffset(12, 12),
+				Size = UDim2.fromOffset(14, 14),
 				Image = "http://www.roblox.com/asset/?id=12266946128",
 				Parent = TransparencyDragHolder,
 				ThemeTag = {
-					ImageColor3 = "Foreground",
+					ImageColor3 = "DialogInput",
 				}
 			})
 
@@ -311,7 +312,7 @@ function Element:New(Config)
 
 		local function Display()
 			SatVibMap.BackgroundColor3 = Color3.fromHSV(Hue, 1, 1)
-			HueDrag.Position = UDim2.new(0, 0, Hue, -6)
+			HueDrag.Position = UDim2.new(0, -1, Hue, -6)
 			SatCursor.Position = UDim2.new(Sat, 0, 1 - Vib, 0)
 			DialogDisplayFrame.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
 
@@ -323,7 +324,7 @@ function Element:New(Config)
 			if Config.Transparency then
 				TransparencyColor.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
 				DialogDisplayFrame.BackgroundTransparency = Transparency
-				TransparencyDrag.Position = UDim2.new(0, 0, 1 - Transparency, -6)
+				TransparencyDrag.Position = UDim2.new(0, -1, 1 - Transparency, -6)
 				AlphaInput.Input.Text = require(Root):Round((1 - Transparency) * 100, 0) .. "%"
 			end
 		end
@@ -486,6 +487,8 @@ function Element:New(Config)
 	end)
 
 	Colorpicker:Display()
+
+	Library.Options[Idx] = Colorpicker
 	return Colorpicker
 end
 

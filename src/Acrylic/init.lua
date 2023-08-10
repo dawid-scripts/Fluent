@@ -4,7 +4,7 @@ local Acrylic = {
 	AcrylicPaint = require(script.AcrylicPaint),
 }
 
-local function init()
+function Acrylic.init()
 	local baseEffect = Instance.new("DepthOfFieldEffect")
 	baseEffect.FarIntensity = 0
 	baseEffect.InFocusRadius = 0.1
@@ -48,5 +48,4 @@ local function init()
 	Acrylic.Enable()
 end
 
-init()
 return Acrylic

@@ -4,7 +4,9 @@ local Window = Main:CreateWindow({
     Title = "Fluent " .. Main.Version,
     SubTitle = "by dawid",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460)
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark"
 })
 
 local Tabs = {
@@ -45,7 +47,9 @@ do
                     {
                         Title = "Cancel",
                         Callback = function()
-                            print("Cancelled the dialog")
+                            local Notif = Main:Notification({
+
+                            })
                         end
                     }
                 }
@@ -53,9 +57,9 @@ do
         end
     })
 
-    local Toggle = Tabs.Main:AddToggle({Title = "Toggle", Default = false })
+    local Toggle = Tabs.Main:AddToggle("Toggle", {Title = "Toggle", Default = false })
     
-    local Slider = Tabs.Main:AddSlider({
+    local Slider = Tabs.Main:AddSlider("Slider", {
         Title = "Slider",
         Description = "This is a slider",
         Default = 2,
@@ -65,7 +69,7 @@ do
     })
 
 
-    local Dropdown = Tabs.Main:AddDropdown({
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
         Title = "Dropdown",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
         Multi = false,
@@ -74,7 +78,7 @@ do
 
     Dropdown:SetValue("four")
     
-    local MultiDropdown = Tabs.Main:AddDropdown({
+    local MultiDropdown = Tabs.Main:AddDropdown("MultiDropdown", {
         Title = "Dropdown",
         Description = "You can select multiple values.",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
@@ -88,20 +92,40 @@ do
         seven = false
     })
 
-    local Colorpicker = Tabs.Main:AddColorpicker({
+    local Colorpicker = Tabs.Main:AddColorpicker("Colorpicker", {
         Title = "Colorpicker",
         Default = Color3.fromRGB(96, 205, 255)
     })
 
-    local TColorpicker = Tabs.Main:AddColorpicker({
+    local TColorpicker = Tabs.Main:AddColorpicker("TransparencyColorpicker", {
         Title = "Colorpicker",
         Description = "but you can change the transparency.",
         Transparency = 0,
         Default = Color3.fromRGB(96, 205, 255)
     })
+
+    local Keybind = Tabs.Main:AddKeybind("Keybind", {
+        Title = "KeyBind",
+        Mode = "Toggle",
+        Default = "LeftControl",
+        ChangedCallback = function(New)
+            print("Keybind changed:", New)
+        end
+    })
+
+    local Input = Tabs.Main:AddInput("Input", {
+        Title = "Input",
+        Default = "",
+        Numeric = false,
+        Finished = false,
+        Placeholder = "Placeholder text",
+        Callback = function(Value)
+            print("Input changed: ", Value)
+        end
+    })
        
-    Toggle:OnChanged(function(Value)
-        print("Toggle changed:", Value)
+    Toggle:OnChanged(function()
+        print("Toggle changed:", Main.Options["Toggle"].Value)
     end)
 
     Slider:OnChanged(function(Value)
@@ -125,14 +149,50 @@ do
     end)
 
     TColorpicker:OnChanged(function()
-        game.Workspace:WaitForChild("Baseplate").Transparency = TColorpicker.Transparency
-        game.Workspace:WaitForChild("Baseplate").Color = TColorpicker.Value
         print(
             "TColorpicker changed:", TColorpicker.Value,
             "Transparency:", TColorpicker.Transparency
         )
     end)
+
+    Keybind:OnClick(function(Value)
+        print(Value)
+    end)
 end
 
+do
+
+    local InterfaceSection = Tabs.Settings:AddSection("Interface")
+
+    InterfaceSection:AddDropdown("InterfaceTheme", {
+        Title = "Theme",
+        Description = "Changes the interface theme.",
+        Values = Main.Themes,
+        Default = Main.Theme,
+        Callback = function(Value)
+            Main:SetTheme(Value)
+        end
+    })
+
+    if Main.UseAcrylic then
+        InterfaceSection:AddToggle("AcrylicToggle", {
+            Title = "Acrylic",
+            Description = "The blurred background requires graphic quality 8+",
+            Default = Main.Acrylic,
+            Callback = function(Value)
+                Main:ToggleAcrylic(Value)
+            end
+        })
+    end
+
+    InterfaceSection:AddToggle("TransparentToggle", {
+        Title = "Transparency",
+        Description = "Makes the interface transparent.",
+        Default = Main.Transparency,
+        Callback = function(Value)
+            Main:ToggleTransparency(Value)
+        end
+    })
+end
 
 Window:SelectTab(1)

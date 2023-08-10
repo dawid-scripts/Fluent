@@ -4,15 +4,14 @@ local AcrylicBlur = require(script.Parent.AcrylicBlur)
 local New = Creator.New
 
 return function(props)
-	local Blur = AcrylicBlur()
+	local AcrylicPaint = {}
 
-	local comp = New("Frame", {
+	AcrylicPaint.Frame = New("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 0.9,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BorderSizePixel = 0,
 	}, {
-		Blur.Frame,
 		New("ImageLabel", {
 			Image = "rbxassetid://8992230677",
 			ScaleType = "Slice",
@@ -22,7 +21,7 @@ return function(props)
 			Position = UDim2.new(0.5, 0, 0.5, 0),
 			BackgroundTransparency = 1,
 			ImageColor3 = Color3.fromRGB(0, 0, 0),
-			ImageTransparency = 0.45,
+			ImageTransparency = 0.7,
 		}),
 
 		New("UICorner", {
@@ -98,7 +97,7 @@ return function(props)
 			}),
 			New("UIStroke", {
 				Transparency = 0.5,
-				Thickness = 1.5,
+				Thickness = 1,
 				ThemeTag = {
 					Color = "AcrylicBorder",
 				},
@@ -106,10 +105,15 @@ return function(props)
 		}),
 	})
 
-	return {
-		Frame = comp,
-		Model = Blur.Model,
-		AddParent = Blur.AddParent,
-		SetVisibility = Blur.SetVisibility,
-	}
+	local Blur
+
+	if require(script.Parent.Parent).UseAcrylic then
+		Blur = AcrylicBlur()
+		Blur.Frame.Parent = AcrylicPaint.Frame
+		AcrylicPaint.Model = Blur.Model
+		AcrylicPaint.AddParent = Blur.AddParent
+		AcrylicPaint.SetVisibility = Blur.SetVisibility
+	end
+
+	return AcrylicPaint
 end

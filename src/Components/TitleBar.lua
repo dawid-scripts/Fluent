@@ -9,6 +9,8 @@ local AddSignal = Creator.AddSignal
 return function(Config)
 	local TitleBar = {}
 
+	local Library = require(Root)
+
 	local function BarButton(Icon, Pos, Parent, Callback)
 		local Button = {
 			Callback = Callback or function() end,
@@ -47,7 +49,7 @@ return function(Config)
 			SetTransparency(0.94)
 		end)
 		AddSignal(Button.Frame.MouseLeave, function()
-			SetTransparency(1)
+			SetTransparency(1, true)
 		end)
 		AddSignal(Button.Frame.MouseButton1Down, function()
 			SetTransparency(0.96)
@@ -122,16 +124,34 @@ return function(Config)
 			Size = UDim2.new(1, 0, 0, 1),
 			Position = UDim2.new(0, 0, 1, 0),
 			ThemeTag = {
-				BackgroundColor3 = "AcrylicForeBorder",
+				BackgroundColor3 = "TitleBarLine",
 			},
 		}),
 	})
 
-	TitleBar.CloseButton = BarButton(Assets.Close, UDim2.new(1, -4, 0, 4), TitleBar.Frame, require(Root).Destroy)
+	TitleBar.CloseButton = BarButton(Assets.Close, UDim2.new(1, -4, 0, 4), TitleBar.Frame, function()
+		Library.Window:Dialog({
+			Title = "Close",
+			Content = "Are you sure you want to unload the interface?",
+			Buttons = {
+				{
+					Title = "Yes",
+					Callback = function()
+						Library:Destroy()
+					end
+				},
+				{
+					Title = "No"
+				}
+			}
+		})
+	end)
 	TitleBar.MaxButton = BarButton(Assets.Max, UDim2.new(1, -40, 0, 4), TitleBar.Frame, function()
 		Config.Window.Maximize(not Config.Window.Maximized)
 	end)
-	TitleBar.MinButton = BarButton(Assets.Min, UDim2.new(1, -80, 0, 4), TitleBar.Frame, function() end)
+	TitleBar.MinButton = BarButton(Assets.Min, UDim2.new(1, -80, 0, 4), TitleBar.Frame, function()
+	 
+	end)
 
 	return TitleBar
 end
