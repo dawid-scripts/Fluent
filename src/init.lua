@@ -31,6 +31,7 @@ local Library = {
 
     Window = nil,
     WindowFrame = nil,
+    Unloaded = false,
 
     Theme = "Dark",
     DialogOpen = false,
@@ -51,10 +52,20 @@ function Library:SafeCallback(Function, ...)
         local _, i = Event:find(":%d+: ");
 
         if not i then
-            return print(Event)
+            return Library:Notify({
+                Title = "Interface",
+                Content = "Callback error",
+                SubContent = Event,
+                Duration = 5
+            })
         end
 
-        return print(Event:sub(i + 1))
+        return Library:Notify({
+            Title = "Interface",
+            Content = "Callback error",
+            SubContent = Event:sub(i + 1),
+            Duration = 5
+        })
     end
 end
 
@@ -131,7 +142,7 @@ function Library:CreateWindow(Config)
 
     NotificationModule:Init(Library.GUI)
 
-    function Window:Tab(TabConfig)
+    function Window:AddTab(TabConfig)
         local Tab = {Type = "Tab"}
 
         if Library:GetIcon(TabConfig.Icon) then
@@ -215,6 +226,7 @@ function Library:Destroy()
         if ProtectInstance then
             ProtectInstance.UnProtectInstance(Library.WindowFrame.AcrylicPaint.Model)
         end
+        Library.Unloaded = true
         Library.WindowFrame.AcrylicPaint.Model:Destroy()
         Creator.Disconnect()
         Library.GUI:Destroy()
@@ -233,11 +245,11 @@ end
 
 function Library:ToggleTransparency(Value)
     if Library.WindowFrame then
-        Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.4 or 0
+        Library.WindowFrame.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.35 or 0
     end
 end
 
-function Library:Notification(Config)
+function Library:Notify(Config)
     return NotificationModule:New(Config)
 end
 

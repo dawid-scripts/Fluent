@@ -2,7 +2,6 @@ return {
     Name = "Dark",
 	Accent = Color3.fromRGB(96, 205, 255),
 
-    AcrylicTransparency = 0.4,
 	AcrylicMain = Color3.fromRGB(60, 60, 60),
     AcrylicBorder = Color3.fromRGB(90, 90, 90),
     AcrylicGradient = ColorSequence.new(Color3.fromRGB(40, 40, 40), Color3.fromRGB(40, 40, 40)),
@@ -44,5 +43,5 @@ return {
     Text = Color3.fromRGB(240, 240, 240),
 	SubText = Color3.fromRGB(170, 170, 170),
     Hover = Color3.fromRGB(120, 120, 120),
-    HoverChange = 0.04
+    HoverChange = 0.07
 }

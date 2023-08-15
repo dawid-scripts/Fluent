@@ -27,6 +27,9 @@ function Element:New(Idx, Config)
     local Picking = false
 
 	local KeybindFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, true)
+    
+    Keybind.SetTitle = KeybindFrame.SetTitle
+	Keybind.SetDesc = KeybindFrame.SetDesc
 
     local KeybindDisplayLabel = New("TextLabel", {
         FontFace = Font.new(

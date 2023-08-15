@@ -1,11 +1,17 @@
 local Themes = {
-	Names = {}
+	Names = {
+		"Dark",
+		"Darker",
+		"Light",
+		"Aqua",
+		"Amethyst",
+		"Rose"
+	}
 }
 
-for _, Theme in next, script:GetChildren() do
-	local Required = require(Theme)
-	Themes[Required.Name] = Required
-	table.insert(Themes.Names, Required.Name)
+for _, Theme in next, Themes.Names do
+	local Required = require(script[Theme])
+	Themes[Theme] = Required
 end
 
 return Themes

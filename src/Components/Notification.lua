@@ -31,13 +31,15 @@ function Notification:New(Config)
     Config.Content = Config.Content or "Content"
     Config.SubContent = Config.SubContent or ""
     Config.Duration = Config.Duration or nil
-    local NewNotification = {}
+    local NewNotification = {
+        Closed = false
+    }
 
     NewNotification.AcrylicPaint = Acrylic.AcrylicPaint()
 
     NewNotification.Title = New("TextLabel", {
         Position = UDim2.new(0, 13, 0, 15),
-        Text = "Notification Title",
+        Text = Config.Title,
         RichText = true,
         TextColor3 = Color3.fromRGB(255, 255, 255),
         TextTransparency = 0,
@@ -101,6 +103,25 @@ function Notification:New(Config)
 		NewNotification.SubContentLabel,
 	})
 
+    NewNotification.CloseButton = New("TextButton", {
+        Text = "",
+        Position = UDim2.new(1, -12, 0, 11),
+        Size = UDim2.fromOffset(20, 20),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundTransparency = 1
+    }, {
+        New("ImageLabel", {
+            Image = require(script.Parent.Assets).Close,
+            Size = UDim2.fromOffset(16, 16),
+            Position = UDim2.fromScale(0.5, 0.5),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            ThemeTag = {
+                ImageColor3 = "Text",
+            },
+        }),
+    })
+
     NewNotification.Root = New("Frame", {
         BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 1, 0),
@@ -108,6 +129,7 @@ function Notification:New(Config)
     }, {
         NewNotification.AcrylicPaint.Frame,
         NewNotification.Title,
+        NewNotification.CloseButton,
         NewNotification.LabelHolder
     })
 
@@ -136,6 +158,10 @@ function Notification:New(Config)
 		NewNotification.Root.Position = UDim2.new(Values.Scale, Values.Offset, 0, 0)
 	end)
 
+    Creator.AddSignal(NewNotification.CloseButton.MouseButton1Click, function()
+        NewNotification:Close()
+    end)
+
     function NewNotification:Open()
         local ContentSize = NewNotification.LabelHolder.AbsoluteSize.Y
         NewNotification.Holder.Size = UDim2.new(1, 0, 0, 55 + ContentSize)
@@ -147,14 +173,18 @@ function Notification:New(Config)
     end
 
     function NewNotification:Close()
-        task.spawn(function()
-            RootMotor:setGoal({
-                Scale = Spring(1, { frequency = 5 }),
-                Offset = Spring(60, { frequency = 5 })
-            })
-            task.wait(0.45)
-            NewNotification.Holder:Destroy()
-        end)
+        if not NewNotification.Closed then
+            NewNotification.Closed = true
+            task.spawn(function()
+                RootMotor:setGoal({
+                    Scale = Spring(1, { frequency = 5 }),
+                    Offset = Spring(60, { frequency = 5 })
+                })
+                task.wait(0.45)
+                NewNotification.AcrylicPaint.Model:Destroy()
+                NewNotification.Holder:Destroy()
+            end)
+        end
     end
 
     NewNotification:Open()

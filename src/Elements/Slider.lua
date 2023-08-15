@@ -31,6 +31,9 @@ function Element:New(Idx, Config)
 	local SliderFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, false)
 	SliderFrame.DescLabel.Size = UDim2.new(1, -170, 0, 14)
 
+	Slider.SetTitle = SliderFrame.SetTitle
+	Slider.SetDesc = SliderFrame.SetDesc
+
 	local SliderDot = New("ImageLabel", {
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, -7, 0.5, 0),

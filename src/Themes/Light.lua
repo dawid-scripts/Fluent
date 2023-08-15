@@ -2,7 +2,6 @@ return {
     Name = "Light",
 	Accent = Color3.fromRGB(0, 103, 192),
 
-    AcrylicTransparency = 0.4,
 	AcrylicMain = Color3.fromRGB(200, 200, 200),
     AcrylicBorder = Color3.fromRGB(120, 120, 120),
     AcrylicGradient = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 255, 255)),

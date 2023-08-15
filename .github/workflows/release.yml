@@ -26,10 +26,10 @@ jobs:
     - name: Setup Aftman
       uses: ok-nick/setup-aftman@v0.3.0
     
-    - name: Install Rojo & Remodel
+    - name: Install Rojo, Lune and DarkLua
       run: aftman install
         
-    - name: Build & Compile
+    - name: Build and Compile
       run: |
         pnpm run rojo --verbose
       

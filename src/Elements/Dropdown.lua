@@ -30,6 +30,9 @@ function Element:New(Idx, Config)
     local DropdownFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, false)
     DropdownFrame.DescLabel.Size = UDim2.new(1, -170, 0, 14)
     
+    Dropdown.SetTitle = DropdownFrame.SetTitle
+	Dropdown.SetDesc = DropdownFrame.SetDesc
+    
     local DropdownDisplay = New("TextLabel", {
         FontFace = Font.new(
             "rbxasset://fonts/families/GothamSSm.json",

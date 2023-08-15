@@ -39,6 +39,9 @@ function Element:New(Idx, Config)
 	Colorpicker:SetHSVFromRGB(Colorpicker.Value)
 
 	local ColorpickerFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, true)
+	
+	Colorpicker.SetTitle = ColorpickerFrame.SetTitle
+	Colorpicker.SetDesc = ColorpickerFrame.SetDesc
 
 	local DisplayFrameColor = New("Frame", {
 		Size = UDim2.fromScale(1, 1),

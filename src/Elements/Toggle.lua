@@ -22,6 +22,9 @@ function Element:New(Idx, Config)
 	local ToggleFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, true)
 	ToggleFrame.DescLabel.Size = UDim2.new(1, -54, 0, 14)
 
+	Toggle.SetTitle = ToggleFrame.SetTitle
+	Toggle.SetDesc = ToggleFrame.SetDesc
+
 	local ToggleCircle = New("ImageLabel", {
 		AnchorPoint = Vector2.new(0, 0.5),
 		Size = UDim2.fromOffset(14, 14),
@@ -56,8 +59,6 @@ function Element:New(Idx, Config)
 		ToggleBorder,
 		ToggleCircle,
 	})
-
-	print(ToggleSlider)
 
 	function Toggle:OnChanged(Func)
 		Toggle.Changed = Func
