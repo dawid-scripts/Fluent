@@ -21,7 +21,7 @@ jobs:
       uses: pnpm/action-setup@v2.2.4
       with:
         version: 7.25.1
-        run_install: false
+        run_install: true
     
     - name: Setup Aftman
       uses: ok-nick/setup-aftman@v0.3.0
