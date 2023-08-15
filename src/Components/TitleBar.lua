@@ -150,7 +150,7 @@ return function(Config)
 		Config.Window.Maximize(not Config.Window.Maximized)
 	end)
 	TitleBar.MinButton = BarButton(Assets.Min, UDim2.new(1, -80, 0, 4), TitleBar.Frame, function()
-	 
+		Library.Window:Minimize()
 	end)
 
 	return TitleBar

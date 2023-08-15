@@ -38,6 +38,7 @@ local Library = {
     UseAcrylic = true,
     Acrylic = true,
     Transparency = true,
+    MinimizeKeybind = nil,
 
     GUI = GUI,
 }
@@ -113,7 +114,8 @@ function Library:CreateWindow(Config)
         Containers = {},
         SelectedTab = 0,
         CurrentPos = 17,
-        TabCount = 0
+        TabCount = 0,
+        Minimized = false
     }
 
     Library.UseAcrylic = Config.Acrylic
@@ -210,6 +212,21 @@ function Library:CreateWindow(Config)
 
         Dialog:Open()
     end
+
+    function Window:Minimize()
+        Window.Minimized = not Window.Minimized
+        Window.Frame.Root.Visible = not Window.Minimized
+    end
+
+    Creator.AddSignal(UserInputService.InputBegan, function(Input, Processed)
+        if type(Library.MinimizeKeybind) == "table" and Library.MinimizeKeybind.Type == "Keybind" then
+            if Input.UserInputType == Enum.UserInputType.Keyboard and Input.KeyCode.Name == Library.MinimizeKeybind.Value then
+                Window:Minimize()
+            end
+        elseif Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
+            Window:Minimize()
+        end
+    end)
 
     return Window
 end

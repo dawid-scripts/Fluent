@@ -143,18 +143,19 @@ function Element:New(Idx, Config)
                     Key = "MouseRight"
                 end
 
-                KeybindDisplayLabel.Text = Key
-                Keybind.Value = Key
-
-                Library:SafeCallback(Keybind.ChangedCallback, Input.KeyCode or Input.UserInputType)
-                Library:SafeCallback(Keybind.Changed, Input.KeyCode or Input.UserInputType)
-
                 local EndedEvent
                 EndedEvent = UserInputService.InputEnded:Connect(function(Input)
                     if Input.KeyCode.Name == Key 
                     or Key == "MouseLeft" and Input.UserInputType == Enum.UserInputType.MouseButton1
                     or Key == "MouseRight" and Input.UserInputType == Enum.UserInputType.MouseButton2 then
                         Picking = false
+
+                        KeybindDisplayLabel.Text = Key
+                        Keybind.Value = Key
+        
+                        Library:SafeCallback(Keybind.ChangedCallback, Input.KeyCode or Input.UserInputType)
+                        Library:SafeCallback(Keybind.Changed, Input.KeyCode or Input.UserInputType)
+                        
                         Event:Disconnect()
                         EndedEvent:Disconnect()
                     end
