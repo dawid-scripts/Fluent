@@ -1,16 +1,16 @@
 local httpService = game:GetService("HttpService")
 
-local Addons = {} do
-	Addons.Folder = "LinoriaLibSettings"
-	Addons.Ignore = {}
-	Addons.Parser = {
+local SaveManager = {} do
+	SaveManager.Folder = "FluentSettings"
+	SaveManager.Ignore = {}
+	SaveManager.Parser = {
 		Toggle = {
 			Save = function(idx, object) 
 				return { type = "Toggle", idx = idx, value = object.Value } 
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] then 
-					Addons.Options[idx]:SetValue(data.value)
+				if SaveManager.Options[idx] then 
+					SaveManager.Options[idx]:SetValue(data.value)
 				end
 			end,
 		},
@@ -19,8 +19,8 @@ local Addons = {} do
 				return { type = "Slider", idx = idx, value = tostring(object.Value) }
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] then 
-					Addons.Options[idx]:SetValue(data.value)
+				if SaveManager.Options[idx] then 
+					SaveManager.Options[idx]:SetValue(data.value)
 				end
 			end,
 		},
@@ -29,8 +29,8 @@ local Addons = {} do
 				return { type = "Dropdown", idx = idx, value = object.Value, mutli = object.Multi }
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] then 
-					Addons.Options[idx]:SetValue(data.value)
+				if SaveManager.Options[idx] then 
+					SaveManager.Options[idx]:SetValue(data.value)
 				end
 			end,
 		},
@@ -39,8 +39,8 @@ local Addons = {} do
 				return { type = "Colorpicker", idx = idx, value = object.Value:ToHex(), transparency = object.Transparency }
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] then 
-					Addons.Options[idx]:SetValueRGB(Color3.fromHex(data.value), data.transparency)
+				if SaveManager.Options[idx] then 
+					SaveManager.Options[idx]:SetValueRGB(Color3.fromHex(data.value), data.transparency)
 				end
 			end,
 		},
@@ -49,8 +49,8 @@ local Addons = {} do
 				return { type = "Keybind", idx = idx, mode = object.Mode, key = object.Value }
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] then 
-					Addons.Options[idx]:SetValue({ data.key, data.mode })
+				if SaveManager.Options[idx] then 
+					SaveManager.Options[idx]:SetValue(data.key, data.mode)
 				end
 			end,
 		},
@@ -60,25 +60,25 @@ local Addons = {} do
 				return { type = "Input", idx = idx, text = object.Value }
 			end,
 			Load = function(idx, data)
-				if Addons.Options[idx] and type(data.text) == "string" then
-					Addons.Options[idx]:SetValue(data.text)
+				if SaveManager.Options[idx] and type(data.text) == "string" then
+					SaveManager.Options[idx]:SetValue(data.text)
 				end
 			end,
 		},
 	}
 
-	function Addons:SetIgnoreIndexes(list)
+	function SaveManager:SetIgnoreIndexes(list)
 		for _, key in next, list do
 			self.Ignore[key] = true
 		end
 	end
 
-	function Addons:SetFolder(folder)
+	function SaveManager:SetFolder(folder)
 		self.Folder = folder;
 		self:BuildFolderTree()
 	end
 
-	function Addons:Save(name)
+	function SaveManager:Save(name)
 		if (not name) then
 			return false, "no config file is selected"
 		end
@@ -89,7 +89,7 @@ local Addons = {} do
 			objects = {}
 		}
 
-		for idx, option in next, Addons.Options do
+		for idx, option in next, SaveManager.Options do
 			if not self.Parser[option.Type] then continue end
 			if self.Ignore[idx] then continue end
 
@@ -105,7 +105,7 @@ local Addons = {} do
 		return true
 	end
 
-	function Addons:Load(name)
+	function SaveManager:Load(name)
 		if (not name) then
 			return false, "no config file is selected"
 		end
@@ -125,14 +125,13 @@ local Addons = {} do
 		return true
 	end
 
-	function Addons:IgnoreThemeSettings()
+	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
-			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
-			"ThemeManager_ThemeList", "ThemeManager_CustomThemeList", "ThemeManager_CustomThemeName", -- themes
+			"InterfaceTheme", "AcrylicToggle", "TransparentToggle"
 		})
 	end
 
-	function Addons:BuildFolderTree()
+	function SaveManager:BuildFolderTree()
 		local paths = {
 			self.Folder,
 			self.Folder .. "/settings"
@@ -146,7 +145,7 @@ local Addons = {} do
 		end
 	end
 
-	function Addons:RefreshConfigList()
+	function SaveManager:RefreshConfigList()
 		local list = listfiles(self.Folder .. "/settings")
 
 		local out = {}
@@ -173,99 +172,147 @@ local Addons = {} do
 		return out
 	end
 
-	function Addons:SetLibrary(library)
+	function SaveManager:SetLibrary(library)
 		self.Library = library
         self.Options = library.Options
 	end
 
-	function Addons:LoadAutoloadConfig()
+	function SaveManager:LoadAutoloadConfig()
 		if isfile(self.Folder .. "/settings/autoload.txt") then
 			local name = readfile(self.Folder .. "/settings/autoload.txt")
 
 			local success, err = self:Load(name)
 			if not success then
-				--return self.Library:Notify("Failed to load autoload config: " .. err)
+				return self.Library:Notify({
+					Title = "Interface",
+					Content = "Config loader",
+					SubContent = "Failed to load autoload config: " .. err,
+					Duration = 7
+				})
 			end
 
-			--self.Library:Notify(string.format("Auto loaded config %q", name))
+			self.Library:Notify({
+				Title = "Interface",
+				Content = "Config loader",
+				SubContent = string.format("Auto loaded config %q", name),
+				Duration = 7
+			})
 		end
 	end
 
-
-	function Addons:BuildConfigSection(tab)
-		assert(self.Library, "Must set Addons.Library")
+	function SaveManager:BuildConfigSection(tab)
+		assert(self.Library, "Must set SaveManager.Library")
 
 		local section = tab:AddSection("Configuration")
 
-		section:AddInput("Addons_ConfigName",    { Title = "Config name" })
-		section:AddDropdown("Addons_ConfigList", { Title = "Config list", Values = self:RefreshConfigList(), AllowNull = true })
+		section:AddInput("SaveManager_ConfigName",    { Title = "Config name" })
+		section:AddDropdown("SaveManager_ConfigList", { Title = "Config list", Values = self:RefreshConfigList(), AllowNull = true })
 
 		section:AddButton({
             Title = "Create config",
             Callback = function()
-                local name = Addons.Options.Addons_ConfigName.Value
+                local name = SaveManager.Options.SaveManager_ConfigName.Value
 
                 if name:gsub(" ", "") == "" then 
-                    --return self.Library:Notify("Invalid config name (empty)", 2)
+                    return self.Library:Notify({
+						Title = "Interface",
+						Content = "Config loader",
+						SubContent = "Invalid config name (empty)",
+						Duration = 7
+					})
                 end
 
                 local success, err = self:Save(name)
                 if not success then
-                    --return self.Library:Notify("Failed to save config: " .. err)
+                    return self.Library:Notify({
+						Title = "Interface",
+						Content = "Config loader",
+						SubContent = "Failed to save config: " .. err,
+						Duration = 7
+					})
                 end
 
-                --self.Library:Notify(string.format("Created config %q", name))
+				self.Library:Notify({
+					Title = "Interface",
+					Content = "Config loader",
+					SubContent = string.format("Created config %q", name),
+					Duration = 7
+				})
 
-                Addons.Options.Addons_ConfigList:SetValues(self:RefreshConfigList())
-                Addons.Options.Addons_ConfigList:SetValue(nil)
+                SaveManager.Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+                SaveManager.Options.SaveManager_ConfigList:SetValue(nil)
             end
         })
 
         section:AddButton({Title = "Load config", Callback = function()
-			local name = Addons.Options.Addons_ConfigList.Value
+			local name = SaveManager.Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Load(name)
 			if not success then
-				return --self.Library:Notify("Failed to load config: " .. err)
+				return self.Library:Notify({
+					Title = "Interface",
+					Content = "Config loader",
+					SubContent = "Failed to load config: " .. err,
+					Duration = 7
+				})
 			end
 
-			--self.Library:Notify(string.format("Loaded config %q", name))
+			self.Library:Notify({
+				Title = "Interface",
+				Content = "Config loader",
+				SubContent = string.format("Loaded config %q", name),
+				Duration = 7
+			})
 		end})
 
 		section:AddButton({Title = "Overwrite config", Callback = function()
-			local name = Addons.Options.Addons_ConfigList.Value
+			local name = SaveManager.Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Save(name)
 			if not success then
-				--return self.Library:Notify("Failed to overwrite config: " .. err)
+				return self.Library:Notify({
+					Title = "Interface",
+					Content = "Config loader",
+					SubContent = "Failed to overwrite config: " .. err,
+					Duration = 7
+				})
 			end
 
-			--self.Library:Notify(string.format("Overwrote config %q", name))
+			self.Library:Notify({
+				Title = "Interface",
+				Content = "Config loader",
+				SubContent = string.format("Overwrote config %q", name),
+				Duration = 7
+			})
 		end})
 
 		section:AddButton({Title = "Refresh list", Callback = function()
-			Addons.Options.Addons_ConfigList:SetValues(self:RefreshConfigList())
-			Addons.Options.Addons_ConfigList:SetValue(nil)
+			SaveManager.Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+			SaveManager.Options.SaveManager_ConfigList:SetValue(nil)
 		end})
 
-		section:AddButton({Title = "Set as autoload", Callback = function()
-			local name = Addons.Options.Addons_ConfigList.Value
+		local AutoloadButton
+		AutoloadButton = section:AddButton({Title = "Set as autoload", Description = "Current autoload config: none", Callback = function()
+			local name = SaveManager.Options.SaveManager_ConfigList.Value
 			writefile(self.Folder .. "/settings/autoload.txt", name)
-			--Addons.AutoloadLabel:SetText("Current autoload config: " .. name)
-			--self.Library:Notify(string.format("Set %q to auto load", name))
+			AutoloadButton:SetDesc("Current autoload config: " .. name)
+			self.Library:Notify({
+				Title = "Interface",
+				Content = "Config loader",
+				SubContent = string.format("Set %q to auto load", name),
+				Duration = 7
+			})
 		end})
-
-		--Addons.AutoloadLabel = section:AddLabel("Current autoload config: none", true)
 
 		if isfile(self.Folder .. "/settings/autoload.txt") then
 			local name = readfile(self.Folder .. "/settings/autoload.txt")
-			--Addons.AutoloadLabel:SetText("Current autoload config: " .. name)
+			AutoloadButton:SetDesc("Current autoload config: " .. name)
 		end
 
-		Addons:SetIgnoreIndexes({ "Addons_ConfigList", "Addons_ConfigName" })
+		SaveManager:SetIgnoreIndexes({ "SaveManager_ConfigList", "SaveManager_ConfigName" })
 	end
 
-	Addons:BuildFolderTree()
+	SaveManager:BuildFolderTree()
 end
 
-return Addons
+return SaveManager
