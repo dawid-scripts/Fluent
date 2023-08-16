@@ -11,7 +11,6 @@ local Creator = require(Root.Creator)
 local ElementsTable = require(Root.Elements)
 local Acrylic = require(Root.Acrylic)
 local Components = Root.Components
-local ProtectInstance = require(Root.Packages.ProtectInstance)
 local NotificationModule = require(Components.Notification)
 
 local New = Creator.New
@@ -223,7 +222,7 @@ function Library:CreateWindow(Config)
             if Input.UserInputType == Enum.UserInputType.Keyboard and Input.KeyCode.Name == Library.MinimizeKeybind.Value then
                 Window:Minimize()
             end
-        elseif Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
+        elseif Input.KeyCode == Enum.KeyCode.LeftControl then
             Window:Minimize()
         end
     end)
@@ -240,9 +239,6 @@ end
 
 function Library:Destroy()
     if Library.WindowFrame then
-        if ProtectInstance then
-            ProtectInstance.UnProtectInstance(Library.WindowFrame.AcrylicPaint.Model)
-        end
         Library.Unloaded = true
         Library.WindowFrame.AcrylicPaint.Model:Destroy()
         Creator.Disconnect()

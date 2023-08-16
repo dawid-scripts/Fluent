@@ -2,8 +2,6 @@ local Root = script.Parent.Parent
 local Creator = require(Root.Creator)
 
 local function createAcrylic()
-	local ProtectInstance = require(Root.Packages.ProtectInstance)
-
 	local Part = Creator.New("Part", {
 		Name = "Body",
 		Color = Color3.new(0, 0, 0),
@@ -20,10 +18,6 @@ local function createAcrylic()
 			Offset = Vector3.new(0, 0, -0.000001),
 		})
 	})
-
-	if ProtectInstance then
-		ProtectInstance.ProtectInstance(Part)
-	end
 
 	return Part
 end
