@@ -31,6 +31,8 @@ function Element:New(Idx, Config)
     Textbox.Frame.Position = UDim2.new(1, -10, 0.5, 0)
     Textbox.Frame.AnchorPoint = Vector2.new(1, 0.5)
     Textbox.Frame.Size = UDim2.fromOffset(160, 30)
+    Textbox.Input.Text = Config.Default or ""
+    Textbox.Input.PlaceholderText = Config.Placeholder or ""
 
     local Box = Textbox.Input
 

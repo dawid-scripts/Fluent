@@ -21,6 +21,7 @@ return function(Parent, Acrylic)
 		Position = UDim2.fromOffset(10, 0),
 		ThemeTag = {
 			TextColor3 = "Text",
+			PlaceholderColor3 = "SubText"
 		},
 	})
 
