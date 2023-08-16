@@ -127,7 +127,7 @@ local SaveManager = {} do
 
 	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
-			"InterfaceTheme", "AcrylicToggle", "TransparentToggle"
+			"InterfaceTheme", "AcrylicToggle", "TransparentToggle", "MenuKeybind"
 		})
 	end
 

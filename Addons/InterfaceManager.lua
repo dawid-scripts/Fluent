@@ -6,7 +6,7 @@ local InterfaceManager = {} do
         Theme = "Dark",
         Acrylic = true,
         Transparency = true,
-        MenuKeybind = "RightShift"
+        MenuKeybind = "LeftControl"
     }
 
     function InterfaceManager:SetFolder(folder)
@@ -38,11 +38,11 @@ local InterfaceManager = {} do
 	end
 
     function InterfaceManager:SaveSettings()
-        writefile(self.Folder .. "/options.json", httpService:JSONEncode(InterfaceManager.Settings))
+        writefile(self.Folder .. "/settings/options.json", httpService:JSONEncode(InterfaceManager.Settings))
     end
 
     function InterfaceManager:LoadSettings()
-        local path = self.Folder .. "/options.json"
+        local path = self.Folder .. "/settings/options.json"
         if isfile(path) then
             local data = readfile(path)
             local success, decoded = pcall(httpService.JSONDecode, httpService, data)
@@ -60,17 +60,23 @@ local InterfaceManager = {} do
 		local Library = self.Library
         local Settings = InterfaceManager.Settings
 
+        InterfaceManager:LoadSettings()
+
 		local section = tab:AddSection("Interface")
 
-		section:AddDropdown("InterfaceTheme", {
+		local InterfaceTheme = section:AddDropdown("InterfaceTheme", {
 			Title = "Theme",
 			Description = "Changes the interface theme.",
 			Values = Library.Themes,
 			Default = Settings.Theme,
 			Callback = function(Value)
 				Library:SetTheme(Value)
+                Settings.Theme = Value
+                InterfaceManager:SaveSettings()
 			end
 		})
+
+        InterfaceTheme:SetValue(Settings.Theme)
 	
 		if Library.UseAcrylic then
 			section:AddToggle("AcrylicToggle", {
@@ -80,6 +86,7 @@ local InterfaceManager = {} do
 				Callback = function(Value)
 					Library:ToggleAcrylic(Value)
                     Settings.Acrylic = Value
+                    InterfaceManager:SaveSettings()
 				end
 			})
 		end
@@ -91,12 +98,15 @@ local InterfaceManager = {} do
 			Callback = function(Value)
 				Library:ToggleTransparency(Value)
 				Settings.Transparency = Value
+                InterfaceManager:SaveSettings()
 			end
 		})
 	
 		local MenuKeybind = section:AddKeybind("MenuKeybind", { Title = "Minimize Bind", Default = Settings.MenuKeybind })
-		MenuKeybind:OnChanged(function(Value)
-			Settings.MenuKeybind = Value
+		MenuKeybind:OnChanged(function()
+            print(MenuKeybind.Value)
+			Settings.MenuKeybind = MenuKeybind.Value
+            InterfaceManager:SaveSettings()
 		end)
 		Library.MinimizeKeybind = MenuKeybind
     end
