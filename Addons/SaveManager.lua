@@ -152,8 +152,6 @@ local SaveManager = {} do
 		for i = 1, #list do
 			local file = list[i]
 			if file:sub(-5) == ".json" then
-				-- i hate this but it has to be done ...
-
 				local pos = file:find(".json", 1, true)
 				local start = pos
 
@@ -164,7 +162,10 @@ local SaveManager = {} do
 				end
 
 				if char == "/" or char == "\\" then
-					table.insert(out, file:sub(pos + 1, start - 1))
+					local name = file:sub(pos + 1, start - 1)
+					if not name == "options" then
+						table.insert(out, name)
+					end
 				end
 			end
 		end
