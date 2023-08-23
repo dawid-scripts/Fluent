@@ -21,7 +21,7 @@ return function(Parent, Acrylic)
 		Position = UDim2.fromOffset(10, 0),
 		ThemeTag = {
 			TextColor3 = "Text",
-			PlaceholderColor3 = "SubText"
+			PlaceholderColor3 = "SubText",
 		},
 	})
 
@@ -29,9 +29,9 @@ return function(Parent, Acrylic)
 		BackgroundTransparency = 1,
 		ClipsDescendants = true,
 		Position = UDim2.new(0, 6, 0, 0),
-		Size = UDim2.new(1, -12, 1, 0)
+		Size = UDim2.new(1, -12, 1, 0),
 	}, {
-		Textbox.Input
+		Textbox.Input,
 	})
 
 	Textbox.Indicator = New("Frame", {
@@ -41,7 +41,7 @@ return function(Parent, Acrylic)
 		BackgroundTransparency = Acrylic and 0.5 or 0,
 		ThemeTag = {
 			BackgroundColor3 = Acrylic and "InputIndicator" or "DialogInputLine",
-		}
+		},
 	})
 
 	Textbox.Frame = New("Frame", {
@@ -67,31 +67,36 @@ return function(Parent, Acrylic)
 	})
 
 	local function Update()
-        local PADDING = 2
-        local Reveal = Textbox.Container.AbsoluteSize.X
+		local PADDING = 2
+		local Reveal = Textbox.Container.AbsoluteSize.X
 
-        if not Textbox.Input:IsFocused() or Textbox.Input.TextBounds.X <= Reveal - 2 * PADDING then
-            Textbox.Input.Position = UDim2.new(0, PADDING, 0, 0)
-        else
-            local Cursor = Textbox.Input.CursorPosition
-            if Cursor ~= -1 then
-                local subtext = string.sub(Textbox.Input.Text, 1, Cursor-1)
-                local width = TextService:GetTextSize(subtext, Textbox.Input.TextSize, Textbox.Input.Font, Vector2.new(math.huge, math.huge)).X
+		if not Textbox.Input:IsFocused() or Textbox.Input.TextBounds.X <= Reveal - 2 * PADDING then
+			Textbox.Input.Position = UDim2.new(0, PADDING, 0, 0)
+		else
+			local Cursor = Textbox.Input.CursorPosition
+			if Cursor ~= -1 then
+				local subtext = string.sub(Textbox.Input.Text, 1, Cursor - 1)
+				local width = TextService:GetTextSize(
+					subtext,
+					Textbox.Input.TextSize,
+					Textbox.Input.Font,
+					Vector2.new(math.huge, math.huge)
+				).X
 
-                local CurrentCursorPos = Textbox.Input.Position.X.Offset + width
-                if CurrentCursorPos < PADDING then
-                    Textbox.Input.Position = UDim2.fromOffset(PADDING-width, 0)
-                elseif CurrentCursorPos > Reveal - PADDING - 1 then
-                    Textbox.Input.Position = UDim2.fromOffset(Reveal-width-PADDING-1, 0)
-                end
-            end
-        end
-    end
+				local CurrentCursorPos = Textbox.Input.Position.X.Offset + width
+				if CurrentCursorPos < PADDING then
+					Textbox.Input.Position = UDim2.fromOffset(PADDING - width, 0)
+				elseif CurrentCursorPos > Reveal - PADDING - 1 then
+					Textbox.Input.Position = UDim2.fromOffset(Reveal - width - PADDING - 1, 0)
+				end
+			end
+		end
+	end
 
-    task.spawn(Update)
+	task.spawn(Update)
 
-    Creator.AddSignal(Textbox.Input:GetPropertyChangedSignal('Text'), Update)
-    Creator.AddSignal(Textbox.Input:GetPropertyChangedSignal('CursorPosition'), Update)
+	Creator.AddSignal(Textbox.Input:GetPropertyChangedSignal("Text"), Update)
+	Creator.AddSignal(Textbox.Input:GetPropertyChangedSignal("CursorPosition"), Update)
 
 	Creator.AddSignal(Textbox.Input.Focused, function()
 		Update()
