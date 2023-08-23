@@ -138,12 +138,12 @@ return function(Config)
 					Title = "Yes",
 					Callback = function()
 						Library:Destroy()
-					end
+					end,
 				},
 				{
-					Title = "No"
-				}
-			}
+					Title = "No",
+				},
+			},
 		})
 	end)
 	TitleBar.MaxButton = BarButton(Assets.Max, UDim2.new(1, -40, 0, 4), TitleBar.Frame, function()
