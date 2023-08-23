@@ -101,19 +101,31 @@ function Element:New(Idx, Config)
 	})
 
 	Creator.AddSignal(SliderDot.InputBegan, function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if
+			Input.UserInputType == Enum.UserInputType.MouseButton1
+			or Input.UserInputType == Enum.UserInputType.Touch
+		then
 			Dragging = true
 		end
 	end)
 
 	Creator.AddSignal(SliderDot.InputEnded, function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if
+			Input.UserInputType == Enum.UserInputType.MouseButton1
+			or Input.UserInputType == Enum.UserInputType.Touch
+		then
 			Dragging = false
 		end
 	end)
 
 	Creator.AddSignal(UserInputService.InputChanged, function(Input)
-		if Dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
+		if
+			Dragging
+			and (
+				Input.UserInputType == Enum.UserInputType.MouseMovement
+				or Input.UserInputType == Enum.UserInputType.Touch
+			)
+		then
 			local SizeScale =
 				math.clamp((Input.Position.X - SliderRail.AbsolutePosition.X) / SliderRail.AbsoluteSize.X, 0, 1)
 			Slider:SetValue(Slider.Min + ((Slider.Max - Slider.Min) * SizeScale))
@@ -133,6 +145,11 @@ function Element:New(Idx, Config)
 
 		Library:SafeCallback(Slider.Callback, self.Value)
 		Library:SafeCallback(Slider.Changed, self.Value)
+	end
+
+	function Slider:Destroy()
+		SliderFrame:Destroy()
+		Library.Options[Idx] = nil
 	end
 
 	Slider:SetValue(Config.Default)

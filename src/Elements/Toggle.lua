@@ -87,6 +87,11 @@ function Element:New(Idx, Config)
 		Library:SafeCallback(Toggle.Changed, Toggle.Value)
 	end
 
+	function Toggle:Destroy()
+		ToggleFrame:Destroy()
+		Library.Options[Idx] = nil
+	end
+
 	Creator.AddSignal(ToggleFrame.Frame.MouseButton1Click, function()
 		Toggle:SetValue(not Toggle.Value)
 	end)

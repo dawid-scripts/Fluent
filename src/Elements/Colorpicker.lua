@@ -1,4 +1,5 @@
 local UserInputService = game:GetService("UserInputService")
+local TouchInputService = game:GetService("TouchInputService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
@@ -39,7 +40,7 @@ function Element:New(Idx, Config)
 	Colorpicker:SetHSVFromRGB(Colorpicker.Value)
 
 	local ColorpickerFrame = require(Components.Element)(Config.Title, Config.Description, self.Container, true)
-	
+
 	Colorpicker.SetTitle = ColorpickerFrame.SetTitle
 	Colorpicker.SetDesc = ColorpickerFrame.SetDesc
 
@@ -207,7 +208,7 @@ function Element:New(Idx, Config)
 		local HueDragHolder = New("Frame", {
 			Size = UDim2.new(1, 0, 1, -10),
 			Position = UDim2.fromOffset(0, 5),
-			BackgroundTransparency = 1
+			BackgroundTransparency = 1,
 		})
 
 		local HueDrag = New("ImageLabel", {
@@ -216,7 +217,7 @@ function Element:New(Idx, Config)
 			Parent = HueDragHolder,
 			ThemeTag = {
 				ImageColor3 = "DialogInput",
-			}
+			},
 		})
 
 		local HueSlider = New("Frame", {
@@ -228,7 +229,7 @@ function Element:New(Idx, Config)
 				CornerRadius = UDim.new(1, 0),
 			}),
 			HueSliderGradient,
-			HueDragHolder
+			HueDragHolder,
 		})
 
 		local HexInput = CreateInput()
@@ -259,7 +260,7 @@ function Element:New(Idx, Config)
 			local TransparencyDragHolder = New("Frame", {
 				Size = UDim2.new(1, 0, 1, -10),
 				Position = UDim2.fromOffset(0, 5),
-				BackgroundTransparency = 1
+				BackgroundTransparency = 1,
 			})
 
 			TransparencyDrag = New("ImageLabel", {
@@ -268,7 +269,7 @@ function Element:New(Idx, Config)
 				Parent = TransparencyDragHolder,
 				ThemeTag = {
 					ImageColor3 = "DialogInput",
-				}
+				},
 			})
 
 			TransparencyColor = New("Frame", {
@@ -309,7 +310,7 @@ function Element:New(Idx, Config)
 					}),
 				}),
 				TransparencyColor,
-				TransparencyDragHolder
+				TransparencyDragHolder,
 			})
 		end
 
@@ -358,7 +359,8 @@ function Element:New(Idx, Config)
 		Creator.AddSignal(GreenInput.Input.FocusLost, function(Enter)
 			if Enter then
 				local CurrentColor = GetRGB()
-				local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], GreenInput.Input.Text, CurrentColor["B"])
+				local Success, Result =
+					pcall(Color3.fromRGB, CurrentColor["R"], GreenInput.Input.Text, CurrentColor["B"])
 				if Success and typeof(Result) == "Color3" then
 					if tonumber(GreenInput.Input.Text) <= 255 then
 						Hue, Sat, Vib = Color3.toHSV(Result)
@@ -371,7 +373,8 @@ function Element:New(Idx, Config)
 		Creator.AddSignal(BlueInput.Input.FocusLost, function(Enter)
 			if Enter then
 				local CurrentColor = GetRGB()
-				local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], CurrentColor["G"], BlueInput.Input.Text)
+				local Success, Result =
+					pcall(Color3.fromRGB, CurrentColor["R"], CurrentColor["G"], BlueInput.Input.Text)
 				if Success and typeof(Result) == "Color3" then
 					if tonumber(BlueInput.Input.Text) <= 255 then
 						Hue, Sat, Vib = Color3.toHSV(Result)
@@ -396,7 +399,10 @@ function Element:New(Idx, Config)
 		end
 
 		Creator.AddSignal(SatVibMap.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if
+				Input.UserInputType == Enum.UserInputType.MouseButton1
+				or Input.UserInputType == Enum.UserInputType.Touch
+			then
 				while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 					local MinX = SatVibMap.AbsolutePosition.X
 					local MaxX = MinX + SatVibMap.AbsoluteSize.X
@@ -416,7 +422,10 @@ function Element:New(Idx, Config)
 		end)
 
 		Creator.AddSignal(HueSlider.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if
+				Input.UserInputType == Enum.UserInputType.MouseButton1
+				or Input.UserInputType == Enum.UserInputType.Touch
+			then
 				while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 					local MinY = HueSlider.AbsolutePosition.Y
 					local MaxY = MinY + HueSlider.AbsoluteSize.Y
@@ -483,6 +492,11 @@ function Element:New(Idx, Config)
 	function Colorpicker:OnChanged(Func)
 		Colorpicker.Changed = Func
 		Func(Colorpicker.Value)
+	end
+
+	function Colorpicker:Destroy()
+		ColorpickerFrame:Destroy()
+		Library.Options[Idx] = nil
 	end
 
 	Creator.AddSignal(ColorpickerFrame.Frame.MouseButton1Click, function()
