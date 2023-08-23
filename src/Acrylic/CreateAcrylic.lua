@@ -16,7 +16,7 @@ local function createAcrylic()
 		Creator.New("SpecialMesh", {
 			MeshType = Enum.MeshType.Brick,
 			Offset = Vector3.new(0, 0, -0.000001),
-		})
+		}),
 	})
 
 	return Part

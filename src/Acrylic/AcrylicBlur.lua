@@ -21,7 +21,7 @@ local function createAcrylicBlur(distance)
 	end
 
 	local function render()
-		local res = workspace.CurrentCamera
+		local res = game:GetService("Workspace").CurrentCamera
 		if res then
 			res = res.CFrame
 		end
@@ -42,7 +42,8 @@ local function createAcrylicBlur(distance)
 		local width = (topRight3D - topLeft3D).Magnitude
 		local height = (topRight3D - bottomRight3D).Magnitude
 
-		model.CFrame = CFrame.fromMatrix((topLeft3D + bottomRight3D) / 2, camera.XVector, camera.YVector, camera.ZVector)
+		model.CFrame =
+			CFrame.fromMatrix((topLeft3D + bottomRight3D) / 2, camera.XVector, camera.YVector, camera.ZVector)
 		model.Mesh.Scale = Vector3.new(width, height, 0)
 	end
 
@@ -56,7 +57,7 @@ local function createAcrylicBlur(distance)
 	end
 
 	local function renderOnChange()
-		local camera = workspace.CurrentCamera
+		local camera = game:GetService("Workspace").CurrentCamera
 		if not camera then
 			return
 		end

@@ -1,6 +1,6 @@
 local UserInputService = game:GetService("UserInputService")
 local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
-local Camera = workspace.CurrentCamera
+local Camera = game:GetService("Workspace").CurrentCamera
 
 local Root = script.Parent.Parent
 local Flipper = require(Root.Packages.Flipper)
@@ -13,6 +13,11 @@ local New = Creator.New
 local Dialog = {
 	Window = nil,
 }
+
+function Dialog:Init(Window)
+	Dialog.Window = Window
+	return Dialog
+end
 
 function Dialog:Create()
 	local NewDialog = {
@@ -142,7 +147,8 @@ function Dialog:Create()
 
 		for _, Btn in next, NewDialog.ButtonHolder:GetChildren() do
 			if Btn:IsA("TextButton") then
-				Btn.Size = UDim2.new(1 / NewDialog.Buttons, -(((NewDialog.Buttons - 1) * 10) / NewDialog.Buttons), 0, 32)
+				Btn.Size =
+					UDim2.new(1 / NewDialog.Buttons, -(((NewDialog.Buttons - 1) * 10) / NewDialog.Buttons), 0, 32)
 			end
 		end
 
