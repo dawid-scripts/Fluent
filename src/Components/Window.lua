@@ -1,13 +1,14 @@
 -- i will rewrite this someday
 local UserInputService = game:GetService("UserInputService")
 local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
-local Camera = workspace.CurrentCamera
+local Camera = game:GetService("Workspace").CurrentCamera
 
 local Root = script.Parent.Parent
 local Flipper = require(Root.Packages.Flipper)
 local Creator = require(Root.Creator)
 local Acrylic = require(Root.Acrylic)
 local Assets = require(script.Parent.Assets)
+local Components = script.Parent
 
 local Spring = Flipper.Spring.new
 local Instant = Flipper.Instant.new
@@ -20,7 +21,7 @@ return function(Config)
 		Minimized = false,
 		Maximized = false,
 		Size = Config.Size,
-		Library = Library,
+		CurrentPos = 0,
 		Position = UDim2.fromOffset(
 			Camera.ViewportSize.X / 2 - Config.Size.X.Offset / 2,
 			Camera.ViewportSize.Y / 2 - Config.Size.Y.Offset / 2
@@ -29,13 +30,14 @@ return function(Config)
 
 	local Dragging, DragInput, MousePos, StartPos = false
 	local Resizing, ResizePos = false
+	local MinimizeNotif = false
 
 	Window.AcrylicPaint = Acrylic.AcrylicPaint()
 
 	local Selector = New("Frame", {
 		Size = UDim2.fromOffset(4, 0),
 		BackgroundColor3 = Color3.fromRGB(76, 194, 255),
-		Position = UDim2.fromOffset(-1, 17),
+		Position = UDim2.fromOffset(0, 17),
 		AnchorPoint = Vector2.new(0, 0.5),
 		ThemeTag = {
 			BackgroundColor3 = "Accent",
@@ -52,23 +54,25 @@ return function(Config)
 		Position = UDim2.new(1, -20, 1, -20),
 	})
 
-	Window.TabHolder = New("Frame", {
+	Window.TabHolder = New("ScrollingFrame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
+		ScrollBarImageTransparency = 1,
+		ScrollBarThickness = 0,
+		BorderSizePixel = 0,
+		CanvasSize = UDim2.fromScale(0, 0),
+		ScrollingDirection = Enum.ScrollingDirection.Y,
 	}, {
 		New("UIListLayout", {
 			Padding = UDim.new(0, 4),
 		}),
 	})
 
-	if Config.TabStyle == 2 then
-		Config.TabWidth = 38
-	end
-
 	local TabFrame = New("Frame", {
 		Size = UDim2.new(0, Config.TabWidth, 1, -66),
 		Position = UDim2.new(0, 12, 0, 54),
 		BackgroundTransparency = 1,
+		ClipsDescendants = true,
 	}, {
 		Window.TabHolder,
 		Selector,
@@ -101,6 +105,7 @@ return function(Config)
 		Size = Window.Size,
 		Position = Window.Position,
 		Parent = Config.Parent,
+		Active = true,
 	}, {
 		Window.AcrylicPaint.Frame,
 		Window.TabDisplay,
@@ -114,17 +119,10 @@ return function(Config)
 		SubTitle = Config.SubTitle,
 		Parent = Window.Root,
 		Window = Window,
-	}, Library)
+	})
 
 	if Library.UseAcrylic then
 		Window.AcrylicPaint.AddParent(Window.Root)
-	end
-
-	Window.Destroy = function()
-		if Library.UseAcrylic then
-			Window.AcrylicPaint.Model:Destroy()
-		end
-		Window.Root:Destroy()
 	end
 
 	local SizeMotor = Flipper.GroupMotor.new({
@@ -150,32 +148,30 @@ return function(Config)
 		Window.Root.Position = UDim2.new(0, values.X, 0, values.Y)
 	end)
 
-	local lastValue = 0
-	local lastTime = 0
-	Window.SelectorPosMotor:onStep(function(value)
-		Selector.Position = UDim2.new(0, -1, 0, value)
-		local now = tick()
-		local deltaTime = now - lastTime
+	local LastValue = 0
+	local LastTime = 0
+	Window.SelectorPosMotor:onStep(function(Value)
+		Selector.Position = UDim2.new(0, 0, 0, Value + 17)
+		local Now = tick()
+		local DeltaTime = Now - LastTime
 
-		if lastValue ~= nil then
-			Window.SelectorSizeMotor:setGoal(
-				Spring((math.abs(value - lastValue) / (deltaTime * 45)) + 16, { frequency = 6 })
-			)
-			lastValue = value
+		if LastValue ~= nil then
+			Window.SelectorSizeMotor:setGoal(Spring((math.abs(Value - LastValue) / (DeltaTime * 60)) + 16))
+			LastValue = Value
 		end
-		lastTime = now
+		LastTime = Now
 	end)
 
-	Window.SelectorSizeMotor:onStep(function(value)
-		Selector.Size = UDim2.new(0, 4, 0, value)
+	Window.SelectorSizeMotor:onStep(function(Value)
+		Selector.Size = UDim2.new(0, 4, 0, Value)
 	end)
 
-	Window.ContainerBackMotor:onStep(function(value)
-		Window.ContainerHolder.GroupTransparency = value
+	Window.ContainerBackMotor:onStep(function(Value)
+		Window.ContainerHolder.GroupTransparency = Value
 	end)
 
-	Window.ContainerPosMotor:onStep(function(value)
-		Window.ContainerHolder.Position = UDim2.fromOffset(Config.TabWidth + 26, value)
+	Window.ContainerPosMotor:onStep(function(Value)
+		Window.ContainerHolder.Position = UDim2.fromOffset(Config.TabWidth + 26, Value)
 	end)
 
 	local OldSizeX
@@ -205,7 +201,10 @@ return function(Config)
 	end
 
 	Creator.AddSignal(Window.TitleBar.Frame.InputBegan, function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if
+			Input.UserInputType == Enum.UserInputType.MouseButton1
+			or Input.UserInputType == Enum.UserInputType.Touch
+		then
 			Dragging = true
 			MousePos = Input.Position
 			StartPos = Window.Root.Position
@@ -224,18 +223,26 @@ return function(Config)
 			end)
 		end
 	end)
+
 	Creator.AddSignal(Window.TitleBar.Frame.InputChanged, function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseMovement then
+		if
+			Input.UserInputType == Enum.UserInputType.MouseMovement
+			or Input.UserInputType == Enum.UserInputType.Touch
+		then
 			DragInput = Input
 		end
 	end)
 
 	Creator.AddSignal(ResizeStartFrame.InputBegan, function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if
+			Input.UserInputType == Enum.UserInputType.MouseButton1
+			or Input.UserInputType == Enum.UserInputType.Touch
+		then
 			Resizing = true
 			ResizePos = Input.Position
 		end
 	end)
+
 	Creator.AddSignal(UserInputService.InputChanged, function(Input)
 		if Input == DragInput and Dragging then
 			local Delta = Input.Position - MousePos
@@ -250,7 +257,10 @@ return function(Config)
 			end
 		end
 
-		if Input.UserInputType == Enum.UserInputType.MouseMovement and Resizing then
+		if
+			(Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch)
+			and Resizing
+		then
 			local Delta = Input.Position - ResizePos
 			local StartSize = Window.Size
 
@@ -266,10 +276,106 @@ return function(Config)
 	end)
 
 	Creator.AddSignal(UserInputService.InputEnded, function(Input)
-		if Resizing == true then
+		if Resizing == true or Input.UserInputType == Enum.UserInputType.Touch then
 			Resizing = false
 			Window.Size = UDim2.fromOffset(SizeMotor:getValue().X, SizeMotor:getValue().Y)
 		end
+	end)
+
+	Creator.AddSignal(Window.TabHolder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+		Window.TabHolder.CanvasSize = UDim2.new(0, 0, 0, Window.TabHolder.UIListLayout.AbsoluteContentSize.Y)
+	end)
+
+	Creator.AddSignal(UserInputService.InputBegan, function(Input)
+		if
+			type(Library.MinimizeKeybind) == "table"
+			and Library.MinimizeKeybind.Type == "Keybind"
+			and not UserInputService:GetFocusedTextBox()
+		then
+			if Input.KeyCode.Name == Library.MinimizeKeybind.Value then
+				Window:Minimize()
+			end
+		elseif Input.KeyCode == Library.MinimizeKey and not UserInputService:GetFocusedTextBox() then
+			Window:Minimize()
+		end
+	end)
+
+	function Window:Minimize()
+		Window.Minimized = not Window.Minimized
+		Window.Root.Visible = not Window.Minimized
+		if not MinimizeNotif then
+			MinimizeNotif = true
+			local Key = Library.MinimizeKeybind and Library.MinimizeKeybind.Value or Library.MinimizeKey.Name
+			Library:Notify({
+				Title = "Interface",
+				Content = "Press " .. Key .. " to toggle the inteface.",
+				Duration = 6
+			})
+		end
+	end
+
+	function Window:Destroy()
+		if Library.UseAcrylic then
+			Window.AcrylicPaint.Model:Destroy()
+		end
+		Window.Root:Destroy()
+	end
+
+	local DialogModule = require(Components.Dialog):Init(Window)
+	function Window:Dialog(Config)
+		local Dialog = DialogModule:Create()
+		Dialog.Title.Text = Config.Title
+
+		local Content = New("TextLabel", {
+			FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
+			Text = Config.Content,
+			TextColor3 = Color3.fromRGB(240, 240, 240),
+			TextSize = 14,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
+			Size = UDim2.new(1, -40, 1, 0),
+			Position = UDim2.fromOffset(20, 60),
+			BackgroundTransparency = 1,
+			Parent = Dialog.Root,
+			ClipsDescendants = false,
+			ThemeTag = {
+				TextColor3 = "Text",
+			},
+		})
+
+		New("UISizeConstraint", {
+			MinSize = Vector2.new(300, 165),
+			MaxSize = Vector2.new(620, math.huge),
+			Parent = Dialog.Root,
+		})
+
+		Dialog.Root.Size = UDim2.fromOffset(Content.TextBounds.X + 40, 165)
+		if Content.TextBounds.X + 40 > Window.Size.X.Offset - 120 then
+			Dialog.Root.Size = UDim2.fromOffset(Window.Size.X.Offset - 120, 165)
+			Content.TextWrapped = true
+			Dialog.Root.Size = UDim2.fromOffset(Window.Size.X.Offset - 120, Content.TextBounds.Y + 150)
+		end
+
+		for _, Button in next, Config.Buttons do
+			Dialog:Button(Button.Title, Button.Callback)
+		end
+
+		Dialog:Open()
+	end
+
+	local TabModule = require(Components.Tab):Init(Window)
+	function Window:AddTab(TabConfig)
+		return TabModule:New(TabConfig.Title, TabConfig.Icon, Window.TabHolder)
+	end
+
+	function Window:SelectTab(Tab)
+		TabModule:SelectTab(1)
+	end
+
+	Creator.AddSignal(Window.TabHolder:GetPropertyChangedSignal("CanvasPosition"), function()
+		LastValue = TabModule:GetCurrentTabPos() + 16
+		LastTime = 0
+		Window.SelectorPosMotor:setGoal(Instant(TabModule:GetCurrentTabPos()))
 	end)
 
 	return Window
