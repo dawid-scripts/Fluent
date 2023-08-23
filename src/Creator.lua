@@ -103,7 +103,6 @@ function Creator.UpdateTheme()
 	end
 end
 
-
 function Creator.AddThemeObject(Object, Properties)
 	local Idx = #Creator.Registry + 1
 	local Data = {
