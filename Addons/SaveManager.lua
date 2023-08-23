@@ -163,7 +163,8 @@ local SaveManager = {} do
 
 				if char == "/" or char == "\\" then
 					local name = file:sub(pos + 1, start - 1)
-					if not name == "options" then
+					print(name)
+					if name ~= "options" then
 						table.insert(out, name)
 					end
 				end
