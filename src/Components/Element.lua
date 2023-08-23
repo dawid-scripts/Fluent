@@ -76,7 +76,7 @@ return function(Title, Desc, Parent, Hover)
 		LayoutOrder = 7,
 		ThemeTag = {
 			BackgroundColor3 = "Element",
-			BackgroundTransparency = "ElementTransparency"
+			BackgroundTransparency = "ElementTransparency",
 		},
 	}, {
 		New("UICorner", {
@@ -102,12 +102,22 @@ return function(Title, Desc, Parent, Hover)
 		Element.DescLabel.Text = Set
 	end
 
+	function Element:Destroy()
+		Element.Frame:Destroy()
+	end
+
 	Element:SetTitle(Title)
 	Element:SetDesc(Desc)
 
 	if Hover then
 		local Themes = Root.Themes
-		local Motor, SetTransparency = Creator.SpringMotor(Creator.GetThemeProperty("ElementTransparency"), Element.Frame, "BackgroundTransparency", false, true)
+		local Motor, SetTransparency = Creator.SpringMotor(
+			Creator.GetThemeProperty("ElementTransparency"),
+			Element.Frame,
+			"BackgroundTransparency",
+			false,
+			true
+		)
 
 		Creator.AddSignal(Element.Frame.MouseEnter, function()
 			SetTransparency(Creator.GetThemeProperty("ElementTransparency") - Creator.GetThemeProperty("HoverChange"))

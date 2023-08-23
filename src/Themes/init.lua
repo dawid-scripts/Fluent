@@ -5,13 +5,13 @@ local Themes = {
 		"Light",
 		"Aqua",
 		"Amethyst",
-		"Rose"
-	}
+		"Rose",
+	},
 }
 
-for _, Theme in next, Themes.Names do
-	local Required = require(script[Theme])
-	Themes[Theme] = Required
+for _, Theme in next, script:GetChildren() do
+	local Required = require(Theme)
+	Themes[Required.Name] = Required
 end
 
 return Themes
