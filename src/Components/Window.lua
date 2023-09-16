@@ -22,6 +22,7 @@ return function(Config)
 		Maximized = false,
 		Size = Config.Size,
 		CurrentPos = 0,
+		TabWidth = 0,
 		Position = UDim2.fromOffset(
 			Camera.ViewportSize.X / 2 - Config.Size.X.Offset / 2,
 			Camera.ViewportSize.Y / 2 - Config.Size.Y.Offset / 2
@@ -33,6 +34,7 @@ return function(Config)
 	local MinimizeNotif = false
 
 	Window.AcrylicPaint = Acrylic.AcrylicPaint()
+	Window.TabWidth = Config.TabWidth
 
 	local Selector = New("Frame", {
 		Size = UDim2.fromOffset(4, 0),
@@ -69,7 +71,7 @@ return function(Config)
 	})
 
 	local TabFrame = New("Frame", {
-		Size = UDim2.new(0, Config.TabWidth, 1, -66),
+		Size = UDim2.new(0, Window.TabWidth, 1, -66),
 		Position = UDim2.new(0, 12, 0, 54),
 		BackgroundTransparency = 1,
 		ClipsDescendants = true,
@@ -87,17 +89,30 @@ return function(Config)
 		TextXAlignment = "Left",
 		TextYAlignment = "Center",
 		Size = UDim2.new(1, -16, 0, 28),
-		Position = UDim2.fromOffset(Config.TabWidth + 26, 56),
+		Position = UDim2.fromOffset(Window.TabWidth + 26, 56),
 		BackgroundTransparency = 1,
 		ThemeTag = {
 			TextColor3 = "Text",
 		},
 	})
 
-	Window.ContainerHolder = New("CanvasGroup", {
-		Size = UDim2.new(1, -Config.TabWidth - 32, 1, -102),
-		Position = UDim2.fromOffset(Config.TabWidth + 26, 90),
+	Window.ContainerHolder = New("Frame", {
+		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
+	})
+
+	Window.ContainerAnim = New("CanvasGroup", {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+	})
+
+	Window.ContainerCanvas = New("Frame", {
+		Size = UDim2.new(1, -Window.TabWidth - 32, 1, -102),
+		Position = UDim2.fromOffset(Window.TabWidth + 26, 90),
+		BackgroundTransparency = 1,
+	}, {
+		Window.ContainerAnim,
+		Window.ContainerHolder
 	})
 
 	Window.Root = New("Frame", {
@@ -105,11 +120,10 @@ return function(Config)
 		Size = Window.Size,
 		Position = Window.Position,
 		Parent = Config.Parent,
-		Active = true,
 	}, {
 		Window.AcrylicPaint.Frame,
 		Window.TabDisplay,
-		Window.ContainerHolder,
+		Window.ContainerCanvas,
 		TabFrame,
 		ResizeStartFrame,
 	})
@@ -121,7 +135,7 @@ return function(Config)
 		Window = Window,
 	})
 
-	if Library.UseAcrylic then
+	if require(Root).UseAcrylic then
 		Window.AcrylicPaint.AddParent(Window.Root)
 	end
 
@@ -167,11 +181,11 @@ return function(Config)
 	end)
 
 	Window.ContainerBackMotor:onStep(function(Value)
-		Window.ContainerHolder.GroupTransparency = Value
+		Window.ContainerAnim.GroupTransparency = Value
 	end)
 
 	Window.ContainerPosMotor:onStep(function(Value)
-		Window.ContainerHolder.Position = UDim2.fromOffset(Config.TabWidth + 26, Value)
+		Window.ContainerAnim.Position = UDim2.fromOffset(0, Value)
 	end)
 
 	local OldSizeX
@@ -308,14 +322,14 @@ return function(Config)
 			local Key = Library.MinimizeKeybind and Library.MinimizeKeybind.Value or Library.MinimizeKey.Name
 			Library:Notify({
 				Title = "Interface",
-				Content = "Press " .. Key .. " to toggle the inteface.",
+				Content = "Press " .. Key .. " to toggle the interface.",
 				Duration = 6
 			})
 		end
 	end
 
 	function Window:Destroy()
-		if Library.UseAcrylic then
+		if require(Root).UseAcrylic then
 			Window.AcrylicPaint.Model:Destroy()
 		end
 		Window.Root:Destroy()

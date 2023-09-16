@@ -2,6 +2,8 @@ local Creator = require(script.Parent.Parent.Creator)
 local createAcrylic = require(script.Parent.CreateAcrylic)
 local viewportPointToWorld, getOffset = unpack(require(script.Parent.Utils))
 
+local BlurFolder = Instance.new("Folder", game:GetService("Workspace").CurrentCamera)
+
 local function createAcrylicBlur(distance)
 	local cleanups = {}
 
@@ -12,7 +14,7 @@ local function createAcrylicBlur(distance)
 		bottomRight = Vector2.new(),
 	}
 	local model = createAcrylic()
-	model.Parent = workspace
+	model.Parent = BlurFolder
 
 	local function updatePositions(size, position)
 		positions.topLeft = position

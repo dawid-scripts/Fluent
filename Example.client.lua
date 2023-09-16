@@ -10,14 +10,8 @@ local Window = Main:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:Tab({
-        Title = "Main",
-        Icon = ""
-    }),
-    Settings = Window:Tab({
-        Title = "Settings",
-        Icon = "settings"
-    })
+    Main = Window:AddTab({ Title = "Main", Icon = "box" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 do
@@ -31,7 +25,7 @@ do
         Description = "Very important button",
         Callback = function()
             Window:Dialog({
-                Title = "New Dialog",
+                Title = "Title",
                 Content = "This is a dialog",
                 Buttons = {
                     {
@@ -42,14 +36,13 @@ do
                                 Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mollis dolor eget erat mattis, id mollis mauris cursus. Proin ornare sollicitudin odio, id posuere diam luctus id.",
                                 Buttons = { { Title = "Ok", Callback = function() print("Ok") end} }
                             })
+                            Main.Options.Toggle:Destroy()
                         end
                     },
                     {
                         Title = "Cancel",
                         Callback = function()
-                            local Notif = Main:Notification({
-
-                            })
+                            print("Cancelled the dialog.")
                         end
                     }
                 }
@@ -62,9 +55,9 @@ do
     local Slider = Tabs.Main:AddSlider("Slider", {
         Title = "Slider",
         Description = "This is a slider",
-        Default = 2,
-        Min = 0,
-        Max = 5,
+        Default = 2.0,
+        Min = 0.0,
+        Max = 15.5,
         Rounding = 1
     })
 
@@ -106,7 +99,7 @@ do
 
     local Keybind = Tabs.Main:AddKeybind("Keybind", {
         Title = "KeyBind",
-        Mode = "Toggle",
+        Mode = "Hold",
         Default = "LeftControl",
         ChangedCallback = function(New)
             print("Keybind changed:", New)
@@ -115,12 +108,12 @@ do
 
     local Input = Tabs.Main:AddInput("Input", {
         Title = "Input",
-        Default = "",
+        Default = "Default",
         Numeric = false,
         Finished = false,
         Placeholder = "Placeholder text",
         Callback = function(Value)
-            print("Input changed: ", Value)
+            print("Input changed:", Value)
         end
     })
        
@@ -155,9 +148,17 @@ do
         )
     end)
 
-    Keybind:OnClick(function(Value)
-        print(Value)
+    task.spawn(function()
+        while true do
+            wait(1)
+            local state = Keybind:GetState()
+            if state then
+                print("Keybind is being held down")
+            end
+            if Main.Unloaded then break end
+        end
     end)
+
 end
 
 do
@@ -193,6 +194,13 @@ do
             Main:ToggleTransparency(Value)
         end
     })
+
+    InterfaceSection:AddKeybind("MenuKeybind", { Title = "Minimize Bind", Default = "RightShift" })
+    Main.MinimizeKeybind = Main.Options.MenuKeybind 
 end
 
-Window:SelectTab(1)
+Main:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})

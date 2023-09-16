@@ -35,8 +35,8 @@ local Library = {
 
 	Theme = "Dark",
 	DialogOpen = false,
-	UseAcrylic = true,
-	Acrylic = true,
+	UseAcrylic = false,
+	Acrylic = false,
 	Transparency = true,
 	MinimizeKeybind = nil,
 	MinimizeKey = Enum.KeyCode.LeftControl,
@@ -107,18 +107,19 @@ end
 Library.Elements = Elements
 
 function Library:CreateWindow(Config)
-	assert(Config.Title, "Toggle - Missing Title")
-
-	Config.SubTitle = Config.SubTitle or ""
-	Config.TabWidth = Config.TabWidth or 170
-	Config.Size = Config.Size or UDim2.fromOffset(590, 470)
-	Config.Acrylic = Config.Acrylic or true
-	Config.Theme = Config.Theme or "Dark"
-	Config.MinimizeKey = Config.MinimizeKey or Enum.KeyCode.LeftControl
+	assert(Config.Title, "Window - Missing Title")
 
 	if Library.Window then
 		print("You cannot create more than one window.")
 		return
+	end
+
+	Library.MinimizeKey = Config.MinimizeKey or Enum.KeyCode.LeftControl
+	Library.UseAcrylic = Config.Acrylic or false
+	Library.Acrylic = Config.Acrylic or false
+	Library.Theme = Config.Theme or "Dark"
+	if Config.Acrylic then
+		Acrylic.init()
 	end
 
 	local Window = require(Components.Window)({
@@ -128,13 +129,6 @@ function Library:CreateWindow(Config)
 		SubTitle = Config.SubTitle,
 		TabWidth = Config.TabWidth,
 	})
-
-	Library.MinimizeKey = Config.MinimizeKey
-
-	Library.UseAcrylic = Config.Acrylic
-	if Library.UseAcrylic then
-		Acrylic.init()
-	end
 
 	Library.Window = Window
 	Library:SetTheme(Config.Theme)
