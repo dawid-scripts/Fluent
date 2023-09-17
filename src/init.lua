@@ -17,7 +17,8 @@ local New = Creator.New
 
 local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
 local GUI = New("ScreenGui", {
-	Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or game:GetService("CoreGui"),
+	Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or gethui and gethui() or game:GetService("CoreGui")
+		:FindFirstChild("RobloxGui") and game:GetService("CoreGui").RobloxGui or game:GetService("CoreGui"),
 })
 ProtectGui(GUI)
 NotificationModule:Init(GUI)
